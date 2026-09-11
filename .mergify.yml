@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: vm3 untrusted head-only github-actions dispatch
+    conditions:
+      - number = 4
+    actions:
+      github_actions:
+        workflow:
+          dispatch:
+            - workflow: mergify-dispatch-control.yml
