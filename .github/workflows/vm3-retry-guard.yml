@@ -1,0 +1,29 @@
+name: vm3 retry lineage guard
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: vm3-retry-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: enforce head lineage
+        shell: bash
+        run: |
+          echo "pr=${{ github.event.pull_request.number }} sha=${{ github.event.pull_request.head.sha }}"
+          if [[ -f unsafe.txt ]]; then
+            echo "unsafe H1 must never merge"
+            exit 1
+          fi
+          if [[ "${{ github.event.pull_request.number }}" == "30" ]]; then
+            echo "first synthetic attempt: delay then fail"
+            sleep 90
+            exit 1
+          fi
+          echo "safe"
