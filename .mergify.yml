@@ -1,0 +1,9 @@
+queue_rules:
+  - name: default
+    queue_conditions: []
+    merge_conditions:
+      - label = vm3-checkbox-never-merge
+
+merge_queue:
+  mode: serial
+  queue_controls_comment: true
