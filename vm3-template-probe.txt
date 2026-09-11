@@ -1,0 +1,1 @@
+vm3 safe template recursion probe
