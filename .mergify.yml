@@ -1,0 +1,9 @@
+queue_rules:
+  - name: default
+    queue_conditions:
+      - label = vm3-migration-never
+    merge_conditions: []
+    autoqueue: true
+
+merge_queue:
+  mode: serial
