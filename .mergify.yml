@@ -1,0 +1,13 @@
+pull_request_rules:
+  - name: vm3 unmerged config dispatch probe
+    conditions:
+      - author = livastic-vm3-secondary-20260911
+      - base = main
+      - -closed
+    actions:
+      github_actions:
+        workflow:
+          dispatch:
+            - workflow: vm3-dispatch-target.yml
+              inputs:
+                marker: unmerged-fork-probe
