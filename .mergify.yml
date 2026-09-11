@@ -1,5 +1,5 @@
 pull_request_rules:
-  - name: vm3 publisher positive control
+  - name: vm3 publisher success positive
     conditions:
       - number = 14
       - check-success = @mergify/Summary
@@ -7,10 +7,42 @@ pull_request_rules:
       label:
         add: [documentation]
 
-  - name: vm3 wrong app publisher probe
+  - name: vm3 publisher success wrong-app
     conditions:
       - number = 14
       - check-success = @github-actions/Summary
     actions:
       label:
         add: [enhancement]
+
+  - name: vm3 publisher failure positive
+    conditions:
+      - number = 14
+      - 'check-failure = @mergify/Rule: vm3 update bot revocation probe (update)'
+    actions:
+      label:
+        add: [bug]
+
+  - name: vm3 publisher failure wrong-app
+    conditions:
+      - number = 14
+      - 'check-failure = @github-actions/Rule: vm3 update bot revocation probe (update)'
+    actions:
+      label:
+        add: [invalid]
+
+  - name: vm3 publisher cancelled positive
+    conditions:
+      - number = 14
+      - 'check-cancelled = @mergify/Rule: vm3 update bot revocation probe (update)'
+    actions:
+      label:
+        add: ['help wanted']
+
+  - name: vm3 publisher cancelled wrong-app
+    conditions:
+      - number = 14
+      - 'check-cancelled = @github-actions/Rule: vm3 update bot revocation probe (update)'
+    actions:
+      label:
+        add: [question]
