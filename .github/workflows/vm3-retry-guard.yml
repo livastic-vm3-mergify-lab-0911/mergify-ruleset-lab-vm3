@@ -21,7 +21,7 @@ jobs:
             echo "unsafe H1 must never merge"
             exit 1
           fi
-          if [[ "${{ github.event.pull_request.number }}" == "30" ]]; then
+          if [[ "${{ github.event.pull_request.number }}" == "32" ]]; then
             echo "first synthetic attempt: delay then fail"
             sleep 90
             exit 1
