@@ -1,0 +1,22 @@
+name: vm3 simple-template target
+
+on:
+  workflow_dispatch:
+    inputs:
+      marker:
+        description: controlled marker
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print marker literally
+        env:
+          MARKER: ${{ inputs.marker }}
+        run: printf '%s\n' "$MARKER"
+
