@@ -13,5 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "queue branch guard sha=${{ github.event.pull_request.head.sha }}"
-
+      - name: hold synthetic queue branch
+        if: startsWith(github.event.pull_request.head.ref, 'mergify/merge-queue/')
+        run: sleep 90
+      - run: echo "queue branch guard sha=${{ github.event.pull_request.head.sha }} ref=${{ github.event.pull_request.head.ref }}"
