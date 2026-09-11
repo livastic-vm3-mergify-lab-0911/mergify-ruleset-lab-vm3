@@ -1,0 +1,12 @@
+pull_request_rules:
+  - name: vm3 simple-template recursion probe
+    conditions:
+      - label = documentation
+    actions:
+      github_actions:
+        workflow:
+          dispatch:
+            - workflow: vm3-template-target.yml
+              inputs:
+                marker: '{{ title }}'
+
