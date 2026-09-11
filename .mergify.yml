@@ -1,0 +1,10 @@
+queue_rules:
+  - name: retry-lineage
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-retry-guard
+    max_checks_retries: 1
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 1
