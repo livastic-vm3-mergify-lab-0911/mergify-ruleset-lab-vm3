@@ -1,0 +1,19 @@
+scopes:
+  source:
+    files:
+      scope-a:
+        include:
+          - a/**/*
+  barrier_files:
+    include:
+      - barrier.txt
+
+queue_rules:
+  - name: default
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-never
+
+merge_queue:
+  mode: parallel
+  max_parallel_checks: 2
