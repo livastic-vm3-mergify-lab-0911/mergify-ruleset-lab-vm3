@@ -1,0 +1,28 @@
+name: vm3 deployment publisher probe
+
+on:
+  pull_request:
+    types: [reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  success:
+    if: github.event.pull_request.number == 14
+    runs-on: ubuntu-latest
+    environment:
+      name: vm3-publisher-success
+    steps:
+      - run: echo "vm3 success deployment"
+
+  failure:
+    if: github.event.pull_request.number == 14
+    runs-on: ubuntu-latest
+    environment:
+      name: vm3-publisher-failure
+    steps:
+      - run: |
+          echo "vm3 intentional deployment failure"
+          exit 1
+
