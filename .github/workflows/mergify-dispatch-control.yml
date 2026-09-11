@@ -1,9 +1,0 @@
-name: Mergify Dispatch Control
-on:
-  workflow_dispatch:
-
-jobs:
-  marker:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "MERGIFY_DISPATCH_CONTROL"
