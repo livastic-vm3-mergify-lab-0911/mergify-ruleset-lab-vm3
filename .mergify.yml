@@ -1,0 +1,16 @@
+pull_request_rules:
+  - name: vm3 publisher positive control
+    conditions:
+      - number = 14
+      - check-success = @mergify/Summary
+    actions:
+      label:
+        add: [documentation]
+
+  - name: vm3 wrong app publisher probe
+    conditions:
+      - number = 14
+      - check-success = @github-actions/Summary
+    actions:
+      label:
+        add: [enhancement]
