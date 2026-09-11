@@ -1,0 +1,19 @@
+merge_protections:
+  - name: vm3 deployment reporting control
+    if:
+      - base = main
+    success_conditions:
+      - base = main
+
+merge_protections_settings:
+  reporting_method: deployments
+
+pull_request_rules:
+  - name: vm3 qualified deployment provenance control
+    conditions:
+      - head = deployment-provenance
+      - "deployment-success = @github-actions/Mergify Merge Protections"
+      - label = vm3-deployment-never
+    actions:
+      comment:
+        message: "VM3_DEPLOYMENT_PROVENANCE_ACTION_SHOULD_NOT_RUN"
