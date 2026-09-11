@@ -1,0 +1,12 @@
+name: VM3 Provenance Source
+on:
+  pull_request:
+
+jobs:
+  gate:
+    name: Mergify Merge Protections
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "expected-source GitHub Actions check"
+          exit 1
