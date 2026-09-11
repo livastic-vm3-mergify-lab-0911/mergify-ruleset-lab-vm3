@@ -1,10 +1,10 @@
 scopes:
   source:
     files:
-      x:
+      scope-x:
         include:
           - x/**/*
-      y:
+      scope-y:
         include:
           - y/**/*
 
@@ -16,4 +16,3 @@ queue_rules:
 
 merge_queue:
   mode: serial
-
