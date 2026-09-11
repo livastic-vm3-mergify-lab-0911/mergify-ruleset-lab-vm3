@@ -1,9 +1,0 @@
-# vm3 revocation discriminator 20260912
-pull_request_rules:
-  - name: vm3 update bot revocation probe
-    conditions:
-      - number = 14
-      - label = vm3-update-bot-trigger
-    actions:
-      update:
-        bot_account: livastic-vm3-secondary-20260911
