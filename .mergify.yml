@@ -1,0 +1,13 @@
+commands_restrictions:
+  queue:
+    conditions:
+      - sender-permission >= write
+
+queue_rules:
+  - name: default
+    queue_conditions: []
+    merge_conditions: []
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 1
