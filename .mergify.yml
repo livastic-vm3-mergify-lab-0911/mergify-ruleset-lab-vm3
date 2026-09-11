@@ -2,6 +2,9 @@ commands_restrictions:
   queue:
     conditions:
       - sender-permission >= write
+  update:
+    conditions:
+      - sender-permission >= write
 
 queue_rules:
   - name: default
