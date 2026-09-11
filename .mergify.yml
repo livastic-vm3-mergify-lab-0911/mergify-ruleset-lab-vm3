@@ -1,0 +1,10 @@
+pull_request_rules:
+  - name: vm3 trusted github-actions dispatch positive
+    conditions:
+      - number = 3
+      - label = bug
+    actions:
+      github_actions:
+        workflow:
+          dispatch:
+            - workflow: mergify-dispatch-control.yml
