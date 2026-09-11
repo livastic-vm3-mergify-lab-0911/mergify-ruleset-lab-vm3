@@ -1,0 +1,17 @@
+name: vm3 queue branch edit guard
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: vm3-queue-edit-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "queue branch guard sha=${{ github.event.pull_request.head.sha }}"
+
