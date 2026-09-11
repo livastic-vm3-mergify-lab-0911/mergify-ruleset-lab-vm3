@@ -1,8 +1,0 @@
-pull_request_rules:
-  - name: vm3 status source provenance control
-    conditions:
-      - number = 5
-      - label = vm3-merge-trigger
-    actions:
-      merge:
-        method: merge
