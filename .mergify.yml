@@ -1,0 +1,33 @@
+pull_request_rules:
+  - name: vm3 deployment success publisher positive
+    conditions:
+      - number = 14
+      - deployment-success = @github-actions/vm3-publisher-success
+    actions:
+      label:
+        add: [documentation]
+
+  - name: vm3 deployment success publisher wrong-app
+    conditions:
+      - number = 14
+      - deployment-success = @mergify/vm3-publisher-success
+    actions:
+      label:
+        add: [enhancement]
+
+  - name: vm3 deployment failure publisher positive
+    conditions:
+      - number = 14
+      - deployment-failure = @github-actions/vm3-publisher-failure
+    actions:
+      label:
+        add: [bug]
+
+  - name: vm3 deployment failure publisher wrong-app
+    conditions:
+      - number = 14
+      - deployment-failure = @mergify/vm3-publisher-failure
+    actions:
+      label:
+        add: [invalid]
+
