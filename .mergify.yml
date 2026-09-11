@@ -1,8 +1,0 @@
-queue_rules:
-  - name: default
-    queue_conditions: []
-    merge_conditions:
-      - label = vm3-stack-never-merge
-
-merge_queue:
-  mode: serial
