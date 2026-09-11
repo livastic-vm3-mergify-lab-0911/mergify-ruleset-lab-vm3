@@ -1,3 +1,4 @@
+# vm3 revocation discriminator 20260912
 pull_request_rules:
   - name: vm3 update bot revocation probe
     conditions:
