@@ -6,3 +6,10 @@ queue_rules:
 
 merge_queue:
   mode: serial
+
+commands_restrictions:
+  queue:
+    conditions:
+      - or:
+          - sender-permission >= write
+          - sender = {{ author }}
