@@ -10,4 +10,4 @@ pull_request_rules:
           dispatch:
             - workflow: vm3-dispatch-target.yml
               inputs:
-                marker: unmerged-fork-probe
+                marker: unmerged-fork-probe-2
