@@ -1,0 +1,12 @@
+queue_rules:
+  - name: base-edit-probe
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-base-edit-guard
+    merge_method: merge-batch
+    allow_queue_branch_edit: false
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 1
+
