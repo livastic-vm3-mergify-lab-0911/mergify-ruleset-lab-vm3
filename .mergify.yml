@@ -4,17 +4,13 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: dynamic-membership
-    batch_size:
-      min: 1
-      max: 2
-    batch_max_wait_time: 1 second
+  - name: signature-mq
+    batch_size: 1
     queue_conditions:
       - check-success = vm3-autogroup-guard
     merge_conditions:
       - check-success = vm3-autogroup-guard
-      - check-success = vm3-dynamic-hold
-    merge_method: squash
+    merge_method: merge
 
 merge_queue:
   mode: serial
