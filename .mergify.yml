@@ -4,17 +4,11 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: username-reuse-control
-    queue_conditions:
-      - label = vm3-username-reuse-never
-    merge_conditions: []
-    merge_method: squash
-  - name: username-reuse-impact
+  - name: auto-method-mq
     queue_conditions:
       - check-success = vm3-autogroup-guard
     merge_conditions:
       - check-success = vm3-autogroup-guard
-    merge_method: squash
 
 merge_queue:
   mode: serial
