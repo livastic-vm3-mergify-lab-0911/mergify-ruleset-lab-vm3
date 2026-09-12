@@ -3,15 +3,18 @@ commands_restrictions:
     conditions:
       - sender = livastic-vm3-primary-20260911
 
+scopes:
+  source:
+    manual:
+
 queue_rules:
-  - name: signature-mq
+  - name: vm3-scope-race-impact
     batch_size: 1
-    queue_conditions:
-      - check-success = vm3-autogroup-guard
+    queue_conditions: []
     merge_conditions:
-      - check-success = vm3-autogroup-guard
+      - label = vm3-never-scope-race-merge
     merge_method: merge
 
 merge_queue:
-  mode: serial
-  max_parallel_checks: 1
+  mode: parallel
+  max_parallel_checks: 2
