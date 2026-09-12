@@ -1,0 +1,2 @@
+strict direct-merge probe A
+vm3 direct stale H1 marker 2026-09-12
