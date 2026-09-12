@@ -4,13 +4,28 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: signature-mq
-    batch_size: 1
+  - name: auto-a
+    autoqueue: true
     queue_conditions:
-      - check-success = vm3-autogroup-guard
+      - label = vm3-auto-a
     merge_conditions:
-      - check-success = vm3-autogroup-guard
-    merge_method: merge
+      - label = vm3-never-merge
+    merge_method: squash
+
+  - name: auto-b
+    autoqueue: true
+    queue_conditions:
+      - label = vm3-auto-b
+    merge_conditions:
+      - label = vm3-never-merge
+    merge_method: squash
+
+  - name: manual-only
+    queue_conditions:
+      - label = vm3-manual-only
+    merge_conditions:
+      - label = vm3-never-merge
+    merge_method: squash
 
 merge_queue:
   mode: serial
