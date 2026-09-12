@@ -1,0 +1,23 @@
+name: vm3 autogroup interaction guard
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: vm3-autogroup-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fail only on combined semantic state
+        run: |
+          if [ -f new/rename-me.txt ] && [ -f old/side.txt ]; then
+            echo "combined rename+old-dir side change detected"
+            exit 1
+          fi
+          echo "standalone semantic state is safe"
+
