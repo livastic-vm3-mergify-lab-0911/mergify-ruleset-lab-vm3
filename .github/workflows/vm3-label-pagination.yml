@@ -1,0 +1,89 @@
+name: vm3 label pagination fixture
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Target pull request number
+        required: true
+        type: string
+      mode:
+        description: setup or cleanup
+        required: true
+        type: choice
+        options:
+          - setup
+          - cleanup
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ inputs.pr_number }}
+      MODE: ${{ inputs.mode }}
+    steps:
+      - name: Manage disposable label pagination fixture
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os, urllib.error, urllib.parse, urllib.request
+          repo = 'livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3'
+          token = os.environ['GH_TOKEN']
+          pr = int(os.environ['PR_NUMBER'])
+          mode = os.environ['MODE']
+          noise = [f'vm3pg-{i:03d}' for i in range(1, 106)]
+          block = 'zz-vm3-pagination-block'
+          names = noise + [block]
+
+          def api(method, path, body=None):
+              url = 'https://api.github.com/repos/' + repo + path
+              data = None if body is None else json.dumps(body).encode()
+              req = urllib.request.Request(url, data=data, method=method, headers={
+                  'Authorization': 'Bearer ' + token,
+                  'Accept': 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2026-03-10',
+                  'Content-Type': 'application/json',
+              })
+              try:
+                  with urllib.request.urlopen(req, timeout=20) as r:
+                      return r.status
+              except urllib.error.HTTPError as e:
+                  return e.code
+
+          if mode == 'setup':
+              created = 0
+              existed = 0
+              other = []
+              for name in names:
+                  st = api('POST', '/labels', {'name': name, 'color': 'ededed'})
+                  if st == 201: created += 1
+                  elif st == 422: existed += 1
+                  else: other.append(st)
+              attach = api('POST', f'/issues/{pr}/labels', {'labels': names})
+              print(f'SETUP_CREATED={created}')
+              print(f'SETUP_EXISTED={existed}')
+              print(f'SETUP_OTHER={other[:10]}')
+              print(f'ATTACH_STATUS={attach}')
+          elif mode == 'cleanup':
+              remove_all = api('DELETE', f'/issues/{pr}/labels')
+              deleted = 0
+              missing = 0
+              other = []
+              for name in names:
+                  st = api('DELETE', '/labels/' + urllib.parse.quote(name, safe=''))
+                  if st == 204: deleted += 1
+                  elif st == 404: missing += 1
+                  else: other.append(st)
+              print(f'REMOVE_ALL_STATUS={remove_all}')
+              print(f'DELETED={deleted}')
+              print(f'MISSING={missing}')
+              print(f'CLEANUP_OTHER={other[:10]}')
+          else:
+              raise SystemExit('invalid mode')
+          PY
