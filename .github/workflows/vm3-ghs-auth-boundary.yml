@@ -1,0 +1,24 @@
+name: vm3 ghs auth boundary
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe Mergify with built-in GitHub token
+        env:
+          GH_BUILTIN: ${{ github.token }}
+        shell: bash
+        run: |
+          set +x
+          base='https://api.mergify.com/v1/repos/livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3'
+          get_status=$(curl -sS -o /tmp/get_body -w '%{http_code}' -H "Authorization: Bearer $GH_BUILTIN" "$base/merge-queue/pause")
+          put_status=$(curl -sS -o /tmp/put_body -w '%{http_code}' -X PUT -H "Authorization: Bearer $GH_BUILTIN" -H 'Content-Type: application/json' --data '{"reason":"vm3 ghs read-token auth boundary probe"}' "$base/merge-queue/pause")
+          echo "GET_STATUS=$get_status"
+          echo "PUT_STATUS=$put_status"
+          rm -f /tmp/get_body /tmp/put_body
