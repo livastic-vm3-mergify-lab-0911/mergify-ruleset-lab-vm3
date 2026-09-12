@@ -1,4 +1,4 @@
-name: vm3 autogroup interaction guard
+name: vm3 strict required-check guard
 
 on:
   pull_request:
@@ -13,11 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: fail only on combined semantic state
+      - name: fail only on stale combined state
         run: |
-          if [ -f new/rename-me.txt ] && [ -f old/side.txt ]; then
-            echo "combined rename+old-dir side change detected"
+          if [ -f strict-a.txt ] && [ -f strict-b.txt ]; then
+            echo "combined stale-base state detected"
             exit 1
           fi
-          echo "standalone semantic state is safe"
-
+          echo "standalone state is safe"
