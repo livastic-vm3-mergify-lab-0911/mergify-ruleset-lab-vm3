@@ -1,0 +1,25 @@
+name: vm3 create unsigned merge queue probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: create unsigned merge queue branch commit
+        run: |
+          set -eu
+          git config user.name "vm3-unsigned-mq-probe"
+          git config user.email "vm3-unsigned-mq-probe@example.invalid"
+          git switch -c vm3-unsigned-signature-mq-impact
+          echo "unsigned merge queue signature impact marker" > unsigned-signature-mq-impact.txt
+          git add unsigned-signature-mq-impact.txt
+          git -c commit.gpgsign=false commit -m "Add unsigned Merge Queue signature impact commit"
+          git push origin HEAD:refs/heads/vm3-unsigned-signature-mq-impact
