@@ -1,9 +1,20 @@
+commands_restrictions:
+  queue:
+    conditions:
+      - sender = livastic-vm3-primary-20260911
+
 queue_rules:
-  - name: linear-history-proof
-    batch_size: 1
-    queue_conditions: []
+  - name: username-reuse-control
+    queue_conditions:
+      - label = vm3-username-reuse-never
     merge_conditions: []
-    merge_method: merge
+    merge_method: squash
+  - name: username-reuse-impact
+    queue_conditions:
+      - check-success = vm3-autogroup-guard
+    merge_conditions:
+      - check-success = vm3-autogroup-guard
+    merge_method: squash
 
 merge_queue:
   mode: serial
