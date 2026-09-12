@@ -1,0 +1,20 @@
+name: vm3 retarget hold
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  hold:
+    if: startsWith(github.head_ref, 'mergify/merge-queue/')
+    name: vm3-retarget-hold
+    runs-on: ubuntu-latest
+    steps:
+      - name: keep merge-queue session pending during base retarget
+        run: |
+          echo "holding merge-queue draft while base is retargeted"
+          sleep 180
+          echo "hold complete"

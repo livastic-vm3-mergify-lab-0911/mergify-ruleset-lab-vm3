@@ -10,7 +10,7 @@ queue_rules:
       - check-success = vm3-autogroup-guard
     merge_conditions:
       - check-success = vm3-autogroup-guard
-      - label = vm3-retarget-release
+      - check-success = vm3-retarget-hold
     merge_method: squash
 
 merge_queue:
