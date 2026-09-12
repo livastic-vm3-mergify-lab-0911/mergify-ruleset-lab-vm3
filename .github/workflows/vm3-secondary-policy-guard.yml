@@ -1,0 +1,22 @@
+name: vm3 secondary policy guard
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: vm3-secondary-policy-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fail only on second-ruleset impact marker
+        run: |
+          if [ -f vm3-secondary-policy-block.txt ]; then
+            echo "second ruleset policy blocker present"
+            exit 1
+          fi
+          echo "second ruleset policy safe"
