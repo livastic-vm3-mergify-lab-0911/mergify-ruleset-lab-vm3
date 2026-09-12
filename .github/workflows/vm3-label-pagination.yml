@@ -65,13 +65,17 @@ jobs:
                   if st == 201: created += 1
                   elif st == 422: existed += 1
                   else: other.append(st)
-              attach1 = api('POST', f'/issues/{pr}/labels', {'labels': names[:100]})
-              attach2 = api('POST', f'/issues/{pr}/labels', {'labels': names[100:]})
+              attached = 0
+              attach_other = []
+              for name in names:
+                  st = api('POST', f'/issues/{pr}/labels', {'labels': [name]})
+                  if st == 200: attached += 1
+                  else: attach_other.append(st)
               print(f'SETUP_CREATED={created}')
               print(f'SETUP_EXISTED={existed}')
               print(f'SETUP_OTHER={other[:10]}')
-              print(f'ATTACH1_STATUS={attach1}')
-              print(f'ATTACH2_STATUS={attach2}')
+              print(f'ATTACHED={attached}')
+              print(f'ATTACH_OTHER={attach_other[:10]}')
           elif mode == 'cleanup':
               remove_all = api('DELETE', f'/issues/{pr}/labels')
               deleted = 0
