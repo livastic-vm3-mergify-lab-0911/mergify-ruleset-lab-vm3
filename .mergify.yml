@@ -15,3 +15,14 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
+
+pull_request_rules:
+  - name: stale-author-permission-impact
+    conditions:
+      - base = main
+      - title = VM3 stale author permission impact
+      - author-permission >= write
+      - -draft
+    actions:
+      merge:
+        method: squash
