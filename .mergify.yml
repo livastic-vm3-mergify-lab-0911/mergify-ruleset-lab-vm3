@@ -1,0 +1,13 @@
+queue_rules:
+  - name: autogroup-rename
+    batch_size: 2
+    batch_max_wait_time: 8 sec
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-autogroup-guard
+    merge_method: merge-batch
+
+merge_queue:
+  mode: parallel
+  max_parallel_checks: 2
+
