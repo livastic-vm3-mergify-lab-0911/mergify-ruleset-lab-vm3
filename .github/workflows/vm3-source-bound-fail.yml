@@ -1,0 +1,18 @@
+name: vm3 source-bound failing CI
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  fail:
+    name: Mergify Merge Protections
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "intentional GitHub Actions source-bound failure"
+          exit 1
+
