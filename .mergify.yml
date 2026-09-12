@@ -1,0 +1,17 @@
+merge_protections:
+  - name: vm3 source-bound benign protection
+    if:
+      - base = main
+    success_conditions:
+      - -draft
+
+queue_rules:
+  - name: source-binding-probe
+    queue_conditions: []
+    merge_conditions:
+      - label = vm3-final-impact
+
+merge_queue:
+  mode: serial
+  max_parallel_checks: 1
+
