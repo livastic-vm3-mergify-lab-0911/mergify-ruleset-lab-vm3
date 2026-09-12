@@ -1,1 +1,2 @@
 vm3 reverse-default ruleset lifecycle blocker
+vm3 synchronize trigger
