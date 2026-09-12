@@ -4,12 +4,14 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: auto-method-mq
-    queue_conditions:
-      - check-success = vm3-autogroup-guard
+  - name: thread-batch
+    batch_size: 1
+    branch_protection_injection_mode: merge
+    queue_conditions: []
     merge_conditions:
       - check-success = vm3-autogroup-guard
+    merge_method: squash
 
 merge_queue:
   mode: serial
-  max_parallel_checks: 1
+  max_parallel_checks: 2
