@@ -1,0 +1,20 @@
+name: vm3 dynamic batch hold
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  hold:
+    if: startsWith(github.head_ref, 'mergify/merge-queue/')
+    name: vm3-dynamic-hold
+    runs-on: ubuntu-latest
+    steps:
+      - name: keep dynamic batch running during late-member admission
+        run: |
+          echo "holding running dynamic batch"
+          sleep 120
+          echo "dynamic hold complete"
