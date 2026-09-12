@@ -1,7 +1,12 @@
 queue_rules:
-  - name: migration-probe
-    autoqueue: true
-    queue_conditions:
-      - label = vm3-migration-never
+  - name: autogroup-rename
+    batch_size: 2
+    batch_max_wait_time: 60 sec
+    queue_conditions: []
     merge_conditions:
-      - label = vm3-migration-never
+      - check-success = vm3-autogroup-guard
+    merge_method: merge-batch
+
+merge_queue:
+  mode: isolated
+  max_parallel_checks: 2
