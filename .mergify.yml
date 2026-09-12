@@ -13,7 +13,7 @@ queue_rules:
     batch_size: 1
     queue_conditions: []
     merge_conditions:
-      - label = vm3-never-future-barrier-merge
+      - check-success = vm3-future-barrier-hold
     merge_method: merge
 
 merge_queue:
