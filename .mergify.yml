@@ -4,13 +4,14 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 
 queue_rules:
-  - name: signature-mq
+  - name: retarget-session
     batch_size: 1
     queue_conditions:
       - check-success = vm3-autogroup-guard
     merge_conditions:
       - check-success = vm3-autogroup-guard
-    merge_method: merge
+      - label = vm3-retarget-release
+    merge_method: squash
 
 merge_queue:
   mode: serial
