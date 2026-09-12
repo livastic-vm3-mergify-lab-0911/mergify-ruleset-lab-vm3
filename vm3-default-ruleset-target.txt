@@ -1,1 +1,2 @@
 vm3 default-ruleset target lifecycle fixture
+vm3 stable synchronize marker
