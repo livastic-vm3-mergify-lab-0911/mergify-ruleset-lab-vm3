@@ -1,9 +1,9 @@
 RSpec.describe "Gate" do
-  it "known flaky test" do
-    expect(true).to eq(true)
+  it "security critical regression guard" do
+    expect("secure").to eq("regressed")
   end
 
-  it "security critical regression guard" do
+  it "known flaky test" do
     expect(true).to eq(true)
   end
 end
