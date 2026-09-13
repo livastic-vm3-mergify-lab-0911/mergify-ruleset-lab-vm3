@@ -9,6 +9,14 @@ queue_rules:
     merge_conditions:
       - check-success = vm3-autogroup-guard
     merge_method: merge
+  - name: vm3-two-step-phase-7f31
+    queue_conditions:
+      - head = vm3-two-step-phase-probe
+      - check-success = vm3-two-step-preliminary-7f31
+    merge_conditions:
+      - check-success = vm3-two-step-premerge-7f31
+    merge_method: fast-forward
+    batch_size: 1
 merge_queue:
   mode: serial
   max_parallel_checks: 1
