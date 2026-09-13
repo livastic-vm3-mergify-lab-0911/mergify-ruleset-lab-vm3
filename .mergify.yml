@@ -9,20 +9,6 @@ queue_rules:
     merge_conditions:
       - check-success = vm3-autogroup-guard
     merge_method: merge
-  - name: vm3-time-finalizer-7f31
-    queue_conditions:
-      - head = vm3-time-finalizer-probe
-      - check-success = vm3-autogroup-guard
-      - current-datetime < 2026-09-13T20:48:01Z
-    merge_conditions:
-      - head = vm3-time-finalizer-probe
-      - check-success = vm3-autogroup-guard
-      - current-datetime < 2026-09-13T20:48:01Z
-    merge_method: merge
-    update_method: merge
-    batch_size: 1
-    max_checks_retries: 1
-    checks_timeout: null
 merge_queue:
   mode: serial
   max_parallel_checks: 1
