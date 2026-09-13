@@ -1,7 +1,9 @@
 name: vm3 transfer checkrun delay 9c7e
 
+
 on:
   pull_request:
+
 
 jobs:
   delay:
@@ -10,4 +12,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hold source provenance evaluation open
-        run: sleep 150
+        run: sleep 600
+
