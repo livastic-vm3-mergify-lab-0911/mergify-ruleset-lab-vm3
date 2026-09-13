@@ -1,7 +1,9 @@
 name: vm3 time finalizer delay
 
+
 on:
   pull_request:
+
 
 jobs:
   delay:
@@ -9,4 +11,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hold finalizer past wall-clock deadline
-        run: sleep 240
+        run: sleep 1100
+
