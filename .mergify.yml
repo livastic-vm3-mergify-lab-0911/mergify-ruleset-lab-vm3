@@ -9,6 +9,17 @@ queue_rules:
     merge_conditions:
       - check-success = vm3-autogroup-guard
     merge_method: merge
+  - name: vm3-inplace-fork-7f31
+    queue_conditions:
+      - head = vm3-inplace-fork-probe
+      - check-success = vm3-autogroup-guard
+    merge_conditions:
+      - head = vm3-inplace-fork-probe
+      - check-success = vm3-autogroup-guard
+    merge_method: merge
+    update_method: merge
+    batch_size: 1
+    max_checks_retries: 0
 merge_queue:
   mode: serial
   max_parallel_checks: 1
