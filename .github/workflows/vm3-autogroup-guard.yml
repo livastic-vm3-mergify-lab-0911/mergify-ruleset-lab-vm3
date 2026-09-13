@@ -1,11 +1,15 @@
 name: vm3 strict required-check guard
+# VM3 in-place external-fork workflow-modification canary 7F31
+
 
 on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+
 permissions:
   contents: read
+
 
 jobs:
   guard:
@@ -20,3 +24,4 @@ jobs:
             exit 1
           fi
           echo "standalone state is safe"
+
