@@ -3,22 +3,6 @@ commands_restrictions:
     conditions:
       - sender = livastic-vm3-primary-20260911
 queue_rules:
-  - name: vm3-time-finalizer-live-7f31
-    queue_conditions:
-      - base = vm3-time-finalizer-base-live-7f31
-      - head = vm3-time-finalizer-live-7f31
-      - check-success = vm3-autogroup-guard
-      - current-datetime < 2026-09-13T22:36:49Z
-    merge_conditions:
-      - base = vm3-time-finalizer-base-live-7f31
-      - head = vm3-time-finalizer-live-7f31
-      - check-success = vm3-time-finalizer-delay-7f31
-      - current-datetime < 2026-09-13T22:36:49Z
-    merge_method: merge
-    update_method: merge
-    batch_size: 1
-    max_checks_retries: 1
-    checks_timeout: null
   - name: signature-mq
     queue_conditions:
       - check-success = vm3-autogroup-guard
