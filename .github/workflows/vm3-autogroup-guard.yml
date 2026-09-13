@@ -13,15 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: delay only Mergify queue draft for time-finalizer proof
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-        shell: bash
-        run: |
-          if [[ "$HEAD_REF" == mergify/merge-queue/* ]]; then
-            echo "VM3 controlled queue-draft delay: 240s"
-            sleep 240
-          fi
       - name: fail only on stale combined state
         run: |
           if [ -f strict-a.txt ] && [ -f strict-b.txt ]; then
