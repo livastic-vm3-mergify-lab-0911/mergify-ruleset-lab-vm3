@@ -2,25 +2,6 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
-
-pull_request_rules:
-  - name: vm3 source transfer checkrun provenance 9c7e
-    conditions:
-      - "title = VM3 transfer checkrun stale probe 9c7e"
-      - "head-repo-full-name = livastic-vm3-primary-20260911/mergify-ruleset-lab-vm3"
-      - "check-success = vm3-transfer-checkrun-delay-9c7e"
-    actions:
-      comment:
-        message: "VM3_XFER_CHECKRUN_STALE_9C7E"
-  - name: vm3 source transfer checkrun protected merge impact 9c7e
-    conditions:
-      - "title = VM3 transfer checkrun protected merge impact 9c7e"
-      - "head-repo-full-name = livastic-vm3-primary-20260911/mergify-ruleset-lab-vm3"
-      - "check-success = vm3-transfer-checkrun-delay-9c7e"
-    actions:
-      merge:
-        method: squash
-
 queue_rules:
   - name: signature-mq
     queue_conditions:
