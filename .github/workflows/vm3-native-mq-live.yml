@@ -1,0 +1,51 @@
+name: VM3 Native Merge Group Proof
+
+on:
+  pull_request:
+    branches:
+      - vm3-native-mq-live-20260913
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  vm3-native-mq-required:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Event evidence
+        run: |
+          echo "event=$GITHUB_EVENT_NAME"
+          echo "base_ref=${GITHUB_BASE_REF:-<unset>}"
+          echo "head_ref=${GITHUB_HEAD_REF:-<unset>}"
+          echo "ref=$GITHUB_REF"
+          echo "sha=$GITHUB_SHA"
+      - name: Install exact released clients
+        run: |
+          npm init -y
+          npm install --no-audit --no-fund --legacy-peer-deps --package-lock=false vitest@4.1.10 @mergifyio/vitest@0.3.7
+      - name: Create regression test
+        run: |
+          cat > vitest.config.mjs <<'EOF'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
+          EOF
+          cat > native-queue.test.js <<'EOF'
+          import { describe, it, expect } from 'vitest';
+          import fs from 'node:fs';
+          describe('native-queue-live', () => {
+            it('rejects latest-base integration regression', () => {
+              const base = fs.existsSync('base-marker.txt') ? fs.readFileSync('base-marker.txt','utf8').trim() : '0';
+              const feature = fs.existsSync('feature-marker.txt') ? fs.readFileSync('feature-marker.txt','utf8').trim() : '0';
+              expect(base === '1' && feature === '1').toBe(false);
+            });
+          });
+          EOF
+      - name: Run required test
+        run: npx vitest run native-queue.test.js --config vitest.config.mjs
+
