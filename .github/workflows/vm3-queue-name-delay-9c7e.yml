@@ -1,0 +1,18 @@
+name: VM3 queue-name revocation delayed check
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  delay:
+    if: github.event.pull_request.title == 'VM3 queue-name revocation checkrun 9c7e'
+    name: vm3-queue-name-delay-9c7e
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo 'VM3 queue-name freshness delay started'
+          sleep 150
+          echo 'VM3 queue-name freshness delay completed'

@@ -12,3 +12,12 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
+pull_request_rules:
+  - name: vm3 queue-name revocation checkrun 9c7e
+    conditions:
+      - title = VM3 queue-name revocation checkrun 9c7e
+      - queue-name = signature-mq
+      - check-success = vm3-queue-name-delay-9c7e
+    actions:
+      comment:
+        message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
