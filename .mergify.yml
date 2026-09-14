@@ -8,6 +8,7 @@ queue_rules:
       - check-success = vm3-autogroup-guard
     merge_conditions:
       - check-success = vm3-autogroup-guard
+      - check-success = vm3-queue-name-hold-never
     merge_method: merge
 merge_queue:
   mode: serial
