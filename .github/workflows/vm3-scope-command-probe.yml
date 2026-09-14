@@ -1,0 +1,34 @@
+name: VM3 scope stdout command injection probe
+
+on:
+  pull_request:
+    paths:
+      - '.mergify.yml'
+      - 'vm3-scope-probe.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.title == 'VM3 scope stdout command injection 9c7e'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run official Mergify scopes action
+        id: mergify
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: scopes
+      - name: Read public action outputs
+        env:
+          BASE_OUT: ${{ steps.mergify.outputs.base }}
+          HEAD_OUT: ${{ steps.mergify.outputs.head }}
+        run: |
+          printf 'VM3_BASE_OUT=%s\n' "$BASE_OUT"
+          printf 'VM3_HEAD_OUT=%s\n' "$HEAD_OUT"
+          if [ "$BASE_OUT" = 'VM3_INJECTED_BASE_9C7E' ]; then
+            echo 'VM3_SET_OUTPUT_INJECTION_CONFIRMED=1'
+          else
+            echo 'VM3_SET_OUTPUT_INJECTION_CONFIRMED=0'
+          fi
