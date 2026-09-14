@@ -10,6 +10,10 @@ queue_rules:
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
+    batch_size:
+      min: 1
+      max: 2
+    batch_max_wait_time: 1 second
 merge_queue:
   mode: serial
   max_parallel_checks: 1
