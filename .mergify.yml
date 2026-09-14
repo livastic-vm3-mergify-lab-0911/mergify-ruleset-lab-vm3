@@ -2,6 +2,23 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+
+merge_protections_settings:
+  reporting_method: check-runs
+  post_comment: false
+
+merge_protections:
+  - name: vm3 same-sha A pass 3380
+    if:
+      - head = vm3-samesha-a-3380
+    success_conditions:
+      - title = VM3 same-sha A pass 3380
+  - name: vm3 same-sha B fail 3380
+    if:
+      - head = vm3-samesha-b-3380
+    success_conditions:
+      - label = vm3-samesha-never-3380
+
 queue_rules:
   - name: signature-mq
     queue_conditions:
