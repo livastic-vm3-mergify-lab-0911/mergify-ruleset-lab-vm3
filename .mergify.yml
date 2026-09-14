@@ -2,6 +2,17 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+
+pull_request_rules:
+  - name: vm3 author self review probe 9c7e
+    conditions:
+      - title = VM3 author bot self review 9c7e
+    actions:
+      review:
+        type: APPROVE
+        message: VM3_AUTHOR_SELF_REVIEW_9C7E
+        bot_account: "{{ author }}"
+
 queue_rules:
   - name: signature-mq
     queue_conditions:
