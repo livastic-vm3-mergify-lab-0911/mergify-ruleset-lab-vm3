@@ -1,13 +1,10 @@
 name: VM3 queue-name revocation delayed check
 
-
 on:
   pull_request:
 
-
 permissions:
   contents: read
-
 
 jobs:
   delay:
@@ -19,4 +16,3 @@ jobs:
           echo 'VM3 queue-name freshness delay started'
           sleep 600
           echo 'VM3 queue-name freshness delay completed'
-
