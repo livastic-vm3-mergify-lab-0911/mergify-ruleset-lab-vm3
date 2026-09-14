@@ -1,3 +1,9 @@
+merge_protections:
+  - name: vm3 mp label revoke freshness 0914
+    if:
+      - title = VM3 MP label revoke freshness 0914
+    success_conditions:
+      - label = question
 commands_restrictions:
   queue:
     conditions:
