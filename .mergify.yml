@@ -2,6 +2,12 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+scopes:
+  source:
+    files:
+      "scope-ok\n::warning title=VM3_SCOPES_PRECEDENCE_9C7E::scope-command-reached\n::set-output name=scopes::{\"vm3-injected\":\"true\"}":
+        include:
+          - vm3-scopes-precedence.txt
 queue_rules:
   - name: signature-mq
     queue_conditions:
