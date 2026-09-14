@@ -14,5 +14,5 @@ jobs:
     steps:
       - run: |
           echo 'VM3 queue-name freshness delay started'
-          sleep 150
+          sleep 600
           echo 'VM3 queue-name freshness delay completed'
