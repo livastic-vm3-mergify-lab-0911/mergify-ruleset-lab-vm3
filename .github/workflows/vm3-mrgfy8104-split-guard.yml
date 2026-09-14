@@ -1,0 +1,23 @@
+name: VM3 MRGFY8104 batch split guard
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  split:
+    if: startsWith(github.event.pull_request.title, 'merge queue:')
+    name: vm3-mrgfy8104-split-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parent fails, split child pauses
+        run: |
+          if [ -f vm3-mrgfy8104-a.txt ] && [ -f vm3-mrgfy8104-b.txt ]; then
+            echo 'VM3_MRGFY8104_PARENT_FAIL=1'
+            exit 1
+          fi
+          echo 'VM3_MRGFY8104_SPLIT_CHILD_PAUSE=1'
+          sleep 600
