@@ -1,0 +1,17 @@
+name: VM3 weird required-check quote probe
+
+on:
+  pull_request:
+    paths:
+      - 'vm3-weird-check-marker.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  weird:
+    if: github.event.pull_request.title == 'VM3 weird required check quote 9c7e'
+    name: "vm3-weird-check'"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'VM3 weird check quote probe'
