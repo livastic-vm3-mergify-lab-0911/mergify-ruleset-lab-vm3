@@ -12,3 +12,12 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
+pull_request_rules:
+  - name: vm3 author permission freshness 9c7e
+    conditions:
+      - title = VM3 author permission freshness 9c7e
+      - author-permission >= write
+      - -draft
+    actions:
+      comment:
+        message: VM3_AUTHOR_PERMISSION_FRESHNESS_9C7E
