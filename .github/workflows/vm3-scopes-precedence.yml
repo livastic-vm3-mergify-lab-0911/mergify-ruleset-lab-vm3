@@ -1,0 +1,32 @@
+name: VM3 scopes output precedence probe
+
+on:
+  pull_request:
+    paths:
+      - '.mergify.yml'
+      - 'vm3-scopes-precedence.txt'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.title == 'VM3 scopes output precedence 9c7e'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run official Mergify scopes action
+        id: mergify
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: scopes
+      - name: Read scopes output
+        env:
+          SCOPES_OUT: ${{ steps.mergify.outputs.scopes }}
+        run: |
+          printf 'VM3_SCOPES_OUT=%s\n' "$SCOPES_OUT"
+          if [ "$SCOPES_OUT" = '{"vm3-injected":"true"}' ]; then
+            echo 'VM3_SCOPES_OUTPUT_INJECTION_CONFIRMED=1'
+          else
+            echo 'VM3_SCOPES_OUTPUT_INJECTION_CONFIRMED=0'
+          fi
