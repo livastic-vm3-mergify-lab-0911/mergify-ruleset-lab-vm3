@@ -22,11 +22,3 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-  - name: vm3 fork rebase refusal probe 0914
-    conditions:
-      - title = VM3 fork rebase refusal probe 0914
-      - author = livastic-vm3-secondary-20260911
-      - base = main
-    actions:
-      rebase:
-        bot_account: livastic-vm3-primary-20260911
