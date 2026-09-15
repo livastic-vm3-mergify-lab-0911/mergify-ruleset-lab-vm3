@@ -23,11 +23,3 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-  - name: vm3 source transfer oidc impact f4a6
-    conditions:
-      - title = VM3_XFER_OIDC_IMPACT_F4A6
-      - head-repo-full-name = livastic-vm3-primary-20260911/vm3-oidc-xfer-0915
-      - check-success = vm3-xfer-oidc-delay-f4a6
-    actions:
-      merge:
-        method: squash
