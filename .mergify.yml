@@ -14,7 +14,7 @@ queue_rules:
     queue_conditions:
       - title = VM3 synthetic review false-green q9c2
       - base = vm3-review-queue-base-q9c2
-      - head = review-queue-attack-q9c2
+      - head = review-queue-attack-q9c2-v2
     merge_conditions:
       - check-success = vm3-review-queue-required
     batch_size: 1
@@ -36,7 +36,7 @@ pull_request_rules:
     conditions:
       - title = VM3 synthetic review false-green q9c2
       - base = vm3-review-queue-base-q9c2
-      - head = review-queue-attack-q9c2
+      - head = review-queue-attack-q9c2-v2
     actions:
       queue:
         name: vm3-review-queue-q9c2
