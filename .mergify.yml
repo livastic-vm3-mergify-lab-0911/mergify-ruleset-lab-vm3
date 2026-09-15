@@ -22,11 +22,3 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-
-scopes:
-  source:
-    files:
-      docs-scope:
-        include:
-          - docs/**/*
-  merge_queue_scope: merge-queue
