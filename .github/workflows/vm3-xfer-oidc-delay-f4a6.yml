@@ -1,10 +1,13 @@
 name: VM3 source-transfer OIDC delay F4A6
 
+
 on:
   pull_request:
 
+
 permissions:
   contents: read
+
 
 jobs:
   delay:
@@ -15,5 +18,6 @@ jobs:
       - name: Hold stale provenance window
         run: |
           echo 'VM3_XFER_OIDC_DELAY_F4A6_STARTED'
-          sleep 600
+          sleep 90
           echo 'VM3_XFER_OIDC_DELAY_F4A6_COMPLETED'
+
