@@ -1,0 +1,24 @@
+name: VM3 stale provenance OIDC proof F4A6
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  claims:
+    if: contains(github.event.head_commit.message, 'VM3_XFER_OIDC_IMPACT_F4A6')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and decode OIDC claims without printing token
+        env:
+          OIDC_AUD: vm3-oidc-impact-f4a6
+        run: |
+          set -euo pipefail
+          resp=$(curl -fsS -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${OIDC_AUD}")
+          jwt=$(printf '%s' "$resp" | jq -r '.value')
+          printf '%s' "$jwt" | python3 -c 'import sys,json,base64; t=sys.stdin.read().strip(); p=t.split(".")[1]; p += "="*((4-len(p)%4)%4); j=json.loads(base64.urlsafe_b64decode(p)); keys=["sub","repository","repository_id","ref","sha","aud","event_name","workflow","job_workflow_ref","actor","actor_id"]; print(json.dumps({k:j.get(k) for k in keys}, sort_keys=True))'
