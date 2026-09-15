@@ -4,7 +4,6 @@ commands_restrictions:
       - sender = livastic-vm3-primary-20260911
 queue_rules:
   - name: signature-mq
-    queue_branch_prefix: refs/heads/vm3-qprefix-head-
     queue_conditions:
       - check-success = vm3-autogroup-guard
     merge_conditions:
