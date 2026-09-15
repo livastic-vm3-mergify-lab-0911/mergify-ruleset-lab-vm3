@@ -10,6 +10,16 @@ queue_rules:
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
+  - name: vm3-review-queue-q9c2
+    queue_conditions:
+      - title = VM3 synthetic review false-green q9c2
+      - base = vm3-review-queue-base-q9c2
+      - head = review-queue-attack-q9c2
+    merge_conditions:
+      - check-success = vm3-review-queue-required
+    batch_size: 1
+    max_checks_retries: 0
+    merge_method: merge
 merge_queue:
   mode: serial
   max_parallel_checks: 1
@@ -22,3 +32,11 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 synthetic review autoqueue q9c2
+    conditions:
+      - title = VM3 synthetic review false-green q9c2
+      - base = vm3-review-queue-base-q9c2
+      - head = review-queue-attack-q9c2
+    actions:
+      queue:
+        name: vm3-review-queue-q9c2
