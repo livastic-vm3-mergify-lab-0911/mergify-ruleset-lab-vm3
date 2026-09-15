@@ -10,6 +10,18 @@ queue_rules:
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
+  - name: vm3-direct-freeze-s5k1
+    queue_conditions:
+      - title = VM3 direct merge static freeze s5k1
+      - base = vm3-direct-freeze-base-s5k1
+      - head = vm3-direct-freeze-head-s5k1
+    merge_conditions:
+      - title = VM3 direct merge static freeze s5k1
+      - base = vm3-direct-freeze-base-s5k1
+      - head = vm3-direct-freeze-head-s5k1
+    batch_size: 1
+    max_checks_retries: 0
+    merge_method: merge
 merge_queue:
   mode: serial
   max_parallel_checks: 1
@@ -22,3 +34,11 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 direct merge static freeze autoqueue s5k1
+    conditions:
+      - title = VM3 direct merge static freeze s5k1
+      - base = vm3-direct-freeze-base-s5k1
+      - head = vm3-direct-freeze-head-s5k1
+    actions:
+      queue:
+        name: vm3-direct-freeze-s5k1
