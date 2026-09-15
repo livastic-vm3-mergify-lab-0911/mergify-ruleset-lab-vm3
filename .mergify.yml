@@ -13,6 +13,7 @@ queue_rules:
 merge_queue:
   mode: serial
   max_parallel_checks: 1
+  queue_branch_prefix: refs/heads/vm3-qprefix-head-
 pull_request_rules:
   - name: vm3 queue-name revocation checkrun 9c7e
     conditions:
