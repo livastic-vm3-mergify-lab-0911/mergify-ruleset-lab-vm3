@@ -3,6 +3,14 @@ commands_restrictions:
     conditions:
       - sender = livastic-vm3-primary-20260911
 queue_rules:
+  - name: vm3-ff-native-review-e7a4
+    queue_conditions:
+      - base = vm3-ff-native-review-base-e7a4
+    merge_conditions:
+      - check-success = vm3-ff-native-review-hold-never-e7a4
+    merge_method: fast-forward
+    batch_size: 1
+    max_checks_retries: 0
   - name: signature-mq
     queue_conditions:
       - check-success = vm3-autogroup-guard
