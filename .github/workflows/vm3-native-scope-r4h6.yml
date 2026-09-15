@@ -10,7 +10,7 @@ jobs:
   detect-scopes:
     runs-on: ubuntu-latest
     outputs:
-      docs-scope: ${{ fromJSON(steps.scopes.outputs.scopes).docs-scope }}
+      docs_scope: ${{ fromJSON(steps.scopes.outputs.scopes)['docs-scope'] }}
       merge_queue: ${{ fromJSON(steps.scopes.outputs.scopes)['merge-queue'] }}
     steps:
       - uses: actions/checkout@v5
