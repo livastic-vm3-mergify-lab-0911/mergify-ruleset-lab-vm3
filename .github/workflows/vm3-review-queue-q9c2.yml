@@ -1,4 +1,4 @@
-name: vm3 synthetic review queue q9c2
+name: vm3-chunk-completeness-pipeline-a7f9
 on:
   pull_request:
     branches: [vm3-review-queue-base-q9c2]
@@ -11,7 +11,7 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     env:
-      MERGIFY_TEST_JOB_NAME: vm3-review-queue-required
+      MERGIFY_TEST_JOB_NAME: vm3-chunk-completeness-job-a7f9
     steps:
       - name: Event identity
         env:
@@ -45,6 +45,8 @@ jobs:
   vm3-review-queue-required:
     if: github.event_name == 'pull_request_review'
     runs-on: ubuntu-latest
+    env:
+      MERGIFY_TEST_JOB_NAME: vm3-chunk-completeness-job-a7f9
     steps:
       - name: Event identity
         env:
