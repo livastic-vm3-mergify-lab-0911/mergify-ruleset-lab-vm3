@@ -22,3 +22,12 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 classic bypass pull request allowance c3d1
+    conditions:
+      - title = VM3 classic bypass allowance proof c3d1
+      - author = livastic-vm3-secondary-20260911
+      - base = vm3-classic-bypass-base-c3d1
+      - label = vm3-classic-bypass-trigger-c3d1
+    actions:
+      merge:
+        method: merge
