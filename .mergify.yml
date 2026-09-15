@@ -22,3 +22,13 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 feature push false-green protected merge l8d4
+    conditions:
+      - title = VM3 feature push protected bypass l8d4
+      - head = feature-push-proof-l8d4
+      - base = vm3-feature-push-base-l8d4
+      - check-success = vm3-push-required
+      - label = vm3-feature-push-merge-l8d4
+    actions:
+      merge:
+        method: merge
