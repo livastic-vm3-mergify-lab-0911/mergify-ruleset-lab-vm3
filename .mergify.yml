@@ -22,3 +22,13 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 root2 e2e sibling merge 9K4M
+    conditions:
+      - author = livastic-vm3-secondary-20260911
+      - title = VM3_ROOT2_E2E_TARGET_9K4M
+      - scope = vm3-root2-e2e-trigger-9K4M
+      - check-success = vm3-autogroup-guard
+    actions:
+      merge:
+        method: merge
+
