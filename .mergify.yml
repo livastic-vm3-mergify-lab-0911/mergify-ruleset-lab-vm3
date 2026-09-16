@@ -5,7 +5,7 @@ commands_restrictions:
 scopes:
   source:
     files:
-      old-area:
+      new-area:
         include:
           - strict-a.txt
           - strict-b.txt
