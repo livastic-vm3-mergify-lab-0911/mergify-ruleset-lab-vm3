@@ -1,0 +1,21 @@
+name: vm3 taxonomy guard tx7d51f4
+on:
+  pull_request:
+    branches:
+      - vm3-taxonomy-base-tx7d51f4
+permissions:
+  contents: read
+jobs:
+  taxonomy-guard:
+    name: vm3-taxonomy-guard-tx7d51f4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Reject combined semantic overlap
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME BASE=$GITHUB_BASE_REF HEAD=$GITHUB_HEAD_REF SHA=$GITHUB_SHA"
+          if [[ -f vm3-taxonomy-area/a.txt && -f vm3-taxonomy-area/b.txt ]]; then
+            echo "VM3_TAXONOMY_OVERLAP_DETECTED_tx7d51f4"
+            exit 1
+          fi
+          echo "VM3_TAXONOMY_STANDALONE_OK_tx7d51f4"
