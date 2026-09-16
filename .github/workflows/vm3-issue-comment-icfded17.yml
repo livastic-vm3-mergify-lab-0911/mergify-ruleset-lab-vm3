@@ -1,0 +1,59 @@
+name: VM3 Issue Comment Test Insights icfded17
+on:
+  issue_comment:
+    types: [created]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  trusted-comment-gate:
+    if: github.event.issue.pull_request && startsWith(github.event.comment.body, 'VM3_ISSUE_COMMENT_TI_icfded17')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Context
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "ACTOR=$GITHUB_ACTOR"
+          echo "TRIGGERING_ACTOR=$GITHUB_TRIGGERING_ACTOR"
+          echo "SHA=$GITHUB_SHA"
+          echo "REF=$GITHUB_REF"
+          echo "REF_NAME=$GITHUB_REF_NAME"
+          echo "HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
+          echo "BASE_REF=${GITHUB_BASE_REF:-<unset>}"
+          echo "ISSUE_NUMBER=${{ github.event.issue.number }}"
+          echo "COMMENT_USER=${{ github.event.comment.user.login }}"
+          echo "PR_URL=${{ github.event.issue.pull_request.url }}"
+      - name: Deterministic security gate with released Mergify Vitest
+        shell: bash
+        run: |
+          npm install -g npm@10
+          WORK="$RUNNER_TEMP/vm3-issue-comment-icfded17"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cp "$GITHUB_WORKSPACE/vm3-issue-comment-icfded17.test.js" "$WORK/issue-comment.test.js"
+          cd "$WORK"
+          cat > package.json <<'PKG'
+          {"private":true,"type":"module"}
+          PKG
+          npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          cat > vitest.config.mjs <<'CFG'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
+          CFG
+          npx vitest run issue-comment.test.js --config vitest.config.mjs
+      - name: Trusted post-test write canary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/issues" \
+            -f title="VM3_ISSUE_COMMENT_TRUSTED_WRITE_icfded17" \
+            -f body="Controlled canary. Trigger actor: $GITHUB_TRIGGERING_ACTOR; run: $GITHUB_RUN_ID" \
+            --jq '{number,title,user:.user.login,url:.html_url}'
