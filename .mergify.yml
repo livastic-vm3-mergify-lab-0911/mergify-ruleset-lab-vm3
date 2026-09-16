@@ -5,24 +5,11 @@ commands_restrictions:
 queue_rules:
   - name: signature-mq
     queue_conditions:
-      - base != vm3-merge-batch-review-0031cc
       - check-success = vm3-autogroup-guard
     merge_conditions:
-      - base != vm3-merge-batch-review-0031cc
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
-  - name: vm3-merge-batch-review-0031cc
-    queue_conditions:
-      - base = vm3-merge-batch-review-0031cc
-    merge_conditions:
-      - base = vm3-merge-batch-review-0031cc
-      - label = vm3-merge-batch-go-0031cc
-    branch_protection_injection_mode: queue
-    batch_size: 2
-    batch_max_wait_time: 2 minutes
-    max_checks_retries: 0
-    merge_method: merge-batch
 merge_queue:
   mode: serial
   max_parallel_checks: 1
