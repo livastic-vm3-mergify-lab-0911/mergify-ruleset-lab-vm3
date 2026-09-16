@@ -1,0 +1,16 @@
+name: vm3 trusted native impact nb5b337
+on:
+  push:
+    branches: [vm3-native-impact-nb5b337]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  trusted-native-impact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Execute repository-controlled post-merge script
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash ./vm3-native-impact-nb5b337.sh
