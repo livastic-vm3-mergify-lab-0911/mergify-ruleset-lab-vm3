@@ -2,23 +2,25 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+scopes:
+  source:
+    files:
+      old-area:
+        include:
+          - vm3-taxonomy-area/**/*
+      docs-area:
+        include:
+          - vm3-taxonomy-docs/**/*
 queue_rules:
-  - name: signature-mq
+  - name: vm3-taxonomy-tx7d51f4
     queue_conditions:
-      - check-success = vm3-autogroup-guard
+      - check-success = vm3-taxonomy-guard-tx7d51f4
     merge_conditions:
-      - check-success = vm3-autogroup-guard
-      - check-success = vm3-queue-name-hold-never
+      - check-success = vm3-taxonomy-guard-tx7d51f4
     merge_method: merge
+    batch_size: 1
+    max_checks_retries: 0
 merge_queue:
   mode: serial
   max_parallel_checks: 1
-pull_request_rules:
-  - name: vm3 queue-name revocation checkrun 9c7e
-    conditions:
-      - title = VM3 queue-name revocation checkrun 9c7e
-      - queue-name = signature-mq
-      - check-success = vm3-queue-name-delay-9c7e
-    actions:
-      comment:
-        message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  status_comments: all
