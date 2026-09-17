@@ -1,0 +1,46 @@
+name: VM3 Copy Feature Push Trust fpt7e17
+
+on:
+  push:
+    branches:
+      - 'mergify/copy/**'
+
+permissions:
+  contents: read
+
+jobs:
+  copy-push-required:
+    name: vm3-copy-push-required-fpt7e17
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Event identity
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "BASE_REF=${GITHUB_BASE_REF-}"
+          echo "HEAD_REF=${GITHUB_HEAD_REF-}"
+          echo "REF=$GITHUB_REF"
+          echo "REF_NAME=$GITHUB_REF_NAME"
+          echo "SHA=$GITHUB_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Deterministic trusted test with released Mergify Vitest
+        env:
+          MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORK="$RUNNER_TEMP/vm3-copy-push-fpt7e17"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cp "$GITHUB_WORKSPACE/vm3-copy-feature-push-fpt7e17.test.js" "$WORK/test.js"
+          cd "$WORK"
+          printf '%s\n' '{"private":true,"type":"module"}' > package.json
+          npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          cat > vitest.config.mjs <<'CFG'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
+          CFG
+          npx vitest run test.js --config vitest.config.mjs
