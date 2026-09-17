@@ -1,0 +1,39 @@
+name: VM3 Test Selection Gate tsg9f17
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+      MERGIFY_TEST_SELECTION_ENABLE: "true"
+      MERGIFY_TEST_JOB_NAME: vm3-selection-gate-tsg9f17
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install released pytest-mergify
+        run: python -m pip install --disable-pip-version-check --no-input pytest-mergify==2026.9.11.2
+      - name: Read Test Selection gate without uploading a test run
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pytest_mergify.ci_insights import MergifyCIInsights
+          ci = MergifyCIInsights()
+          ci.on_tests_collected(["vm3/test_selection_gate_tsg9f17.py::test_gate"])
+          ts = ci.test_selection
+          print("VM3_SELECTION_GATE=" + json.dumps({
+              "served": ci.test_selection_was_served,
+              "selection": None if ts is None else ts.selection,
+              "reason": None if ts is None else ts.reason,
+              "tests": None if ts is None else ts.tests,
+              "error": None if ts is None else ts.init_error_msg,
+              "run_context_present": ci.run_context_dict is not None,
+          }, sort_keys=True))
+          PY
