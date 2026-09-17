@@ -22,24 +22,3 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-  - name: vm3 copy feature push source fpt7e17
-    conditions:
-      - author = livastic-vm3-secondary-20260911
-      - title = VM3 copy feature push trusted fpt7e17
-      - base = main
-      - "#files = 1"
-      - files = vm3-copy-feature-push-fpt7e17.test.js
-    actions:
-      copy:
-        branches:
-          - vm3-copy-target-fpt7e17
-
-  - name: vm3 copy feature push trusted merge fpt7e17
-    conditions:
-      - author = mergify[bot]
-      - base = vm3-copy-target-fpt7e17
-      - head ~= ^mergify/copy/vm3-copy-target-fpt7e17/pr-
-      - check-success = vm3-copy-push-required-fpt7e17
-    actions:
-      merge:
-        method: merge
