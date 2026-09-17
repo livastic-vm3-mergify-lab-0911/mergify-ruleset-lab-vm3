@@ -34,7 +34,7 @@ jobs:
           WORK="$RUNNER_TEMP/vm3-copy-push-fpt7e17"
           rm -rf "$WORK"
           mkdir -p "$WORK"
-          cp "$GITHUB_WORKSPACE/vm3-copy-feature-push-fpt7e17.test.js" "$WORK/test.js"
+          cp "$GITHUB_WORKSPACE/vm3-copy-feature-push-fpt7e17.test.js" "$WORK/test.test.js"
           cd "$WORK"
           printf '%s\n' '{"private":true,"type":"module"}' > package.json
           npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
@@ -43,4 +43,4 @@ jobs:
           import { MergifyReporter } from '@mergifyio/vitest';
           export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
           CFG
-          npx vitest run test.js --config vitest.config.mjs
+          npx vitest run test.test.js --config vitest.config.mjs
