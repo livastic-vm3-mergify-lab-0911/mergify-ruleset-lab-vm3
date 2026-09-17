@@ -3,7 +3,8 @@ scopes:
     files:
       critical:
         include:
-          - critical/**
+          - safe/**
       docs:
         include:
           - docs/**
+          - critical/**
