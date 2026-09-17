@@ -1,0 +1,1 @@
+strict stale probe A
