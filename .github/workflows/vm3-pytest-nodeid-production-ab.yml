@@ -41,3 +41,19 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'pytest==8.4.2' 'pytest-mergify==2026.9.11.2' 'pytest-timeout'
       - name: Duplicate-nodeid treatment
         run: python -m pytest -q -s --keep-duplicates vm3_flaky_duplicate.py vm3_flaky_duplicate.py
+
+  context-probe:
+    if: github.head_ref == 'vm3-pytest-nodeid-prod-ab-20260917'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install released pytest-mergify
+        run: python -m pip install --disable-pip-version-check 'pytest==8.4.2' 'pytest-mergify==2026.9.11.2' 'pytest-timeout'
+      - name: Print only non-secret Test Retry context metadata
+        run: python -m pytest -q -s vm3_context_probe.py
