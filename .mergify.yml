@@ -5,22 +5,10 @@ commands_restrictions:
 queue_rules:
   - name: signature-mq
     queue_conditions:
-      - base != vm3-classic-ruleset-73d0f0
       - check-success = vm3-autogroup-guard
     merge_conditions:
-      - base != vm3-classic-ruleset-73d0f0
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
-    merge_method: merge
-  - name: classic-ruleset-vm3-classic-ruleset-73d0f0
-    queue_conditions:
-      - base = vm3-classic-ruleset-73d0f0
-    merge_conditions:
-      - base = vm3-classic-ruleset-73d0f0
-      - label = vm3-merge-hold-73d0f0
-    branch_protection_injection_mode: queue
-    batch_size: 1
-    max_checks_retries: 0
     merge_method: merge
 merge_queue:
   mode: serial
