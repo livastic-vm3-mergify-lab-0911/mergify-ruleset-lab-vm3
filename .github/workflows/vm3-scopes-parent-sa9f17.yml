@@ -1,0 +1,46 @@
+name: VM3 Scopes Parent Binding sa9f17
+on:
+  workflow_dispatch:
+    inputs:
+      control_pr:
+        required: true
+        type: string
+      target_pr:
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - name: Cross-tenant scopes parent-binding A/B
+        shell: bash
+        run: |
+          set -euo pipefail
+          call() {
+            label="$1"; owner="$2"; repo="$3"; pr="$4"
+            url="https://api.mergify.com/v1/repos/${owner}/${repo}/pulls/${pr}/scopes"
+            body_file="${RUNNER_TEMP}/${label}.json"
+            code=$(curl -sS -o "$body_file" -w '%{http_code}' -X PUT \
+              -H "Authorization: Bearer ${MERGIFY_TOKEN}" \
+              -H 'Content-Type: application/json' \
+              --data '{"scopes":[],"all_scopes":true}' \
+              "$url")
+            compact=$(tr '\n' ' ' < "$body_file" | head -c 1200)
+            echo "VM3_SCOPES_${label}_SET_STATUS=${code} BODY=${compact}"
+            if [[ "$code" =~ ^2 ]]; then
+              rbody="${RUNNER_TEMP}/${label}-restore.json"
+              rcode=$(curl -sS -o "$rbody" -w '%{http_code}' -X PUT \
+                -H "Authorization: Bearer ${MERGIFY_TOKEN}" \
+                -H 'Content-Type: application/json' \
+                --data '{"scopes":[],"all_scopes":false}' \
+                "$url")
+              rcompact=$(tr '\n' ' ' < "$rbody" | head -c 1200)
+              echo "VM3_SCOPES_${label}_RESTORE_STATUS=${rcode} BODY=${rcompact}"
+            fi
+          }
+          call CONTROL livastic-vm3-mergify-lab-0911 mergify-ruleset-lab-vm3 "${{ inputs.control_pr }}"
+          call TARGET lvstc9e17f4c29a vm3-tracevictim-58cef0 "${{ inputs.target_pr }}"
