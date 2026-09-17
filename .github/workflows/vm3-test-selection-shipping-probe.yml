@@ -1,0 +1,33 @@
+name: VM3 Test Selection Shipping Probe 20260918
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  selection-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+      MERGIFY_TEST_SELECTION_ENABLE: '1'
+      MERGIFY_TEST_JOB_NAME: vm3-selection-shipping-probe
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install shipping client
+        run: pip install 'pytest==9.0.2' 'pytest-mergify==2026.9.11.2'
+      - name: Run probe suite
+        shell: bash
+        run: |
+          WORK="$RUNNER_TEMP/vm3-selection-probe"
+          rm -rf "$WORK" && mkdir -p "$WORK"
+          cat > "$WORK/test_selection_probe.py" <<'PY'
+          def test_vm3_selection_a():
+              assert True
+          def test_vm3_selection_b():
+              assert True
+          PY
+          cd "$WORK"
+          pytest -q -s test_selection_probe.py
