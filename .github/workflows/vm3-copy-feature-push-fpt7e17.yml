@@ -38,9 +38,26 @@ jobs:
           cd "$WORK"
           printf '%s\n' '{"private":true,"type":"module"}' > package.json
           npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          echo "--- plain Vitest negative control ---"
+          set +e
+          npx vitest run test.test.js --reporter=default
+          PLAIN_RC=$?
+          set -e
+          echo "VM3_PLAIN_RC=$PLAIN_RC"
+          if [ "$PLAIN_RC" -eq 0 ]; then
+            echo "Plain control unexpectedly passed" >&2
+            exit 97
+          fi
+
           cat > vitest.config.mjs <<'CFG'
           import { defineConfig } from 'vitest/config';
           import { MergifyReporter } from '@mergifyio/vitest';
           export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
           CFG
+          echo "--- Mergify Vitest treatment ---"
+          set +e
           npx vitest run test.test.js --config vitest.config.mjs
+          MERGIFY_RC=$?
+          set -e
+          echo "VM3_MERGIFY_RC=$MERGIFY_RC"
+          exit "$MERGIFY_RC"
