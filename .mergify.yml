@@ -22,3 +22,22 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+
+  - name: vm3 sender laundering stage A sl9f17b
+    conditions:
+      - number = 78
+      - sender = livastic-vm3-secondary-20260911
+      - -label = vm3-sender-launder-sl9f17b
+    actions:
+      label:
+        add:
+          - vm3-sender-launder-sl9f17b
+
+  - name: vm3 sender laundering stage B sl9f17b
+    conditions:
+      - number = 78
+      - label = vm3-sender-launder-sl9f17b
+      - sender-permission >= admin
+    actions:
+      comment:
+        message: VM3_SENDER_PERMISSION_LAUNDER_SL9F17B
