@@ -1,0 +1,38 @@
+name: VM3 Custom Scope Current E2E
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  detect-scopes:
+    runs-on: ubuntu-latest
+    outputs:
+      critical: ${{ fromJSON(steps.detect.outputs.scopes).critical }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect scopes with documented custom config path
+        id: detect
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: scopes
+          token: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          mergify_config_path: .ci/mergify-scopes.yml
+      - name: Record critical scope
+        env:
+          SCOPES: ${{ steps.detect.outputs.scopes }}
+        run: echo "SCOPES=$SCOPES"
+
+  critical-required:
+    name: vm3-custom-critical-required
+    needs: detect-scopes
+    if: needs.detect-scopes.outputs.critical == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deterministic critical validation canary
+        run: |
+          echo 'VM3_CUSTOM_SCOPE_CRITICAL_VALIDATION_EXECUTED_CP9F17'
+          exit 1
