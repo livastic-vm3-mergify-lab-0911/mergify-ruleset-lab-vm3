@@ -1,0 +1,65 @@
+name: vm3 Mergify queue explicit-base scope sentinel
+on:
+  pull_request:
+    branches:
+      - vm3-mq-explicit-base-scope-260921
+permissions:
+  contents: read
+jobs:
+  detect-scopes:
+    runs-on: ubuntu-latest
+    outputs:
+      docs_scope: ${{ fromJSON(steps.scopes.outputs.scopes)['docs-scope'] }}
+      merge_queue: ${{ fromJSON(steps.scopes.outputs.scopes)['merge-queue'] }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Event evidence
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "BASE_REF=${GITHUB_BASE_REF-}"
+          echo "HEAD_REF=${GITHUB_HEAD_REF-}"
+          echo "REF=$GITHUB_REF"
+          echo "SHA=$GITHUB_SHA"
+          echo "PR_BASE_SHA=${{ github.event.pull_request.base.sha }}"
+      - name: Detect scopes with supported explicit base input
+        id: scopes
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: scopes
+          base: ${{ github.event.pull_request.base.sha }}
+      - name: Record scope outputs
+        env:
+          SCOPES_JSON: ${{ steps.scopes.outputs.scopes }}
+          BASE: ${{ steps.scopes.outputs.base }}
+          HEAD: ${{ steps.scopes.outputs.head }}
+        run: |
+          echo "SCOPES_JSON=$SCOPES_JSON"
+          echo "MERGIFY_SCOPE_BASE=$BASE"
+          echo "MERGIFY_SCOPE_HEAD=$HEAD"
+  vm3-queue-only-validation:
+    needs: detect-scopes
+    if: ${{ needs.detect-scopes.outputs.merge_queue == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Queue-only validation must block this proof
+        run: |
+          echo 'VM3_MERGIFY_QUEUE_ONLY_VALIDATION_EXECUTED=yes'
+          exit 1
+  ci-gate:
+    if: ${{ !cancelled() }}
+    needs:
+      - detect-scopes
+      - vm3-queue-only-validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record needs state
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: echo "NEEDS_JSON=$NEEDS_JSON"
+      - name: Official Mergify final gate
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: wait-jobs
+          jobs: ${{ toJSON(needs) }}
