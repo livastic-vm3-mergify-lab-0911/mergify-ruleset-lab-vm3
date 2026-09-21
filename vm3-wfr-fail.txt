@@ -1,1 +1,2 @@
 vm3 workflow_run identity fail 260922
+autoq trigger 1
