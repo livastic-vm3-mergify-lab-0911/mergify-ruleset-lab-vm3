@@ -1,0 +1,54 @@
+name: VM3 pull_request_target test identity collision 260922
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+    branches:
+      - vm3-prt-base-260922
+permissions:
+  contents: read
+jobs:
+  test-insights:
+    if: startsWith(github.event.pull_request.title, 'VM3 PRT COLLISION 260922 ')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Record trusted event coordinates
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "PR_HEAD_SHA=$PR_HEAD_SHA"
+          echo "PR_BASE_SHA=$PR_BASE_SHA"
+      - name: Generate controlled JUnit report
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$PR_TITLE" == *" FAIL" ]]; then
+            cat > vm3-prt-collision.xml <<'XML'
+          <testsuite name="vm3-prt-collision-suite" tests="1" failures="1">
+            <testcase classname="vm3.prt" name="same_test"><failure message="controlled failure">controlled failure</failure></testcase>
+          </testsuite>
+          XML
+          else
+            cat > vm3-prt-collision.xml <<'XML'
+          <testsuite name="vm3-prt-collision-suite" tests="1" failures="0">
+            <testcase classname="vm3.prt" name="same_test"/>
+          </testsuite>
+          XML
+          fi
+          cat vm3-prt-collision.xml
+      - name: Upload controlled JUnit to Mergify
+        id: mergify-ci
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: junit-process
+          token: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          job_name: vm3-prt-collision-job-260922
+          report_path: vm3-prt-collision.xml
+      - name: Upload status
+        if: always()
+        env:
+          UPLOAD: ${{ steps.mergify-ci.outputs.test_results_upload }}
+        run: echo "MERGIFY_UPLOAD=$UPLOAD"
