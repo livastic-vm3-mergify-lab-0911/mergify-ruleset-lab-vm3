@@ -1,0 +1,60 @@
+name: VM3 workflow_run Test Insights identity 260922
+on:
+  workflow_run:
+    workflows: ["vm3 strict required-check guard"]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  test-insights:
+    if: startsWith(github.event.workflow_run.head_branch, 'vm3-wfr-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Record trusted workflow_run coordinates
+        env:
+          WFR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          WFR_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WFR_EVENT: ${{ github.event.workflow_run.event }}
+          WFR_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WFR_PRS: ${{ toJson(github.event.workflow_run.pull_requests) }}
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+          echo "WFR_HEAD_SHA=$WFR_HEAD_SHA"
+          echo "WFR_HEAD_BRANCH=$WFR_HEAD_BRANCH"
+          echo "WFR_EVENT=$WFR_EVENT"
+          echo "WFR_CONCLUSION=$WFR_CONCLUSION"
+          echo "WFR_PRS=$WFR_PRS"
+      - name: Generate controlled JUnit report
+        env:
+          WFR_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          if [[ "$WFR_HEAD_BRANCH" == *"fail"* ]]; then
+            cat > vm3-wfr-collision.xml <<'XML'
+          <testsuite name="vm3-wfr-collision-suite" tests="1" failures="1">
+            <testcase classname="vm3.wfr" name="same_test"><failure message="controlled failure">controlled failure</failure></testcase>
+          </testsuite>
+          XML
+          else
+            cat > vm3-wfr-collision.xml <<'XML'
+          <testsuite name="vm3-wfr-collision-suite" tests="1" failures="0">
+            <testcase classname="vm3.wfr" name="same_test"/>
+          </testsuite>
+          XML
+          fi
+          cat vm3-wfr-collision.xml
+      - name: Upload controlled JUnit to Mergify
+        id: mergify-ci
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: junit-process
+          token: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          job_name: vm3-workflow-run-collision-job-260922
+          report_path: vm3-wfr-collision.xml
+      - name: Upload status
+        if: always()
+        env:
+          UPLOAD: ${{ steps.mergify-ci.outputs.test_results_upload }}
+        run: echo "MERGIFY_UPLOAD=$UPLOAD"
