@@ -4,6 +4,7 @@ on:
     types: [opened, reopened, synchronize]
     branches:
       - vm3-prt-base-260922
+      - main
 permissions:
   contents: read
 jobs:
