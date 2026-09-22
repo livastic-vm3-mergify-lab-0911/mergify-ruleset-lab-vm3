@@ -1,0 +1,22 @@
+name: VM3 WA headrace guard 260922
+on:
+  pull_request:
+    branches:
+      - vm3-wa-headrace-target-260922
+jobs:
+  guard:
+    name: vm3-wa-headrace-guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Guard current head
+        shell: bash
+        run: |
+          set -euo pipefail
+          if test -f vm3-wa-headrace-unsafe.txt; then
+            echo 'VM3_HEADRACE_UNSAFE_PRESENT'
+            exit 1
+          fi
+          echo 'VM3_HEADRACE_SAFE_DELAY_START'
+          sleep 25
+          echo 'VM3_HEADRACE_SAFE_SUCCESS'
