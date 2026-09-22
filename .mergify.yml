@@ -22,3 +22,12 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+  - name: vm3 required signatures external fork impact 260922
+    conditions:
+      - title = VM3 REQUIRED SIGNATURES EXTERNAL FORK 260922
+      - from-fork
+      - author = livastic-vm3-secondary-20260911
+      - check-success = vm3-autogroup-guard
+    actions:
+      merge:
+        method: merge
