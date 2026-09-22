@@ -28,6 +28,7 @@ pull_request_rules:
       - from-fork
       - author = livastic-vm3-secondary-20260911
       - check-success = vm3-autogroup-guard
+      - current-datetime > 2026-09-22T02:42:00Z
     actions:
       merge:
         method: merge
