@@ -1,0 +1,21 @@
+name: vm3-sourcechain-trusted-testprocess-260922
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+permissions:
+  contents: read
+jobs:
+  trusted-testprocess:
+    if: startsWith(github.head_ref, 'vm3-sourcechain-attack-260922')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Mergifyio/setup-cli@dc99f07e699b94b39e5495c24596372813eadcbc
+        with:
+          mergify_cli_version: 2026.9.16.1
+      - name: Run repository-controlled test process
+        shell: bash
+        run: bash ci/vm3-sourcechain-poison.sh
