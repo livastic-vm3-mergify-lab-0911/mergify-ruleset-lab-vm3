@@ -1,0 +1,1 @@
+vm3 external unsigned signature canary 260922 final
