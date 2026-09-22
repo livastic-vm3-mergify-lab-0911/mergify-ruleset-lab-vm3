@@ -1,0 +1,92 @@
+name: VM3 Native Merge Group Flaky AB 260923
+
+on:
+  pull_request:
+    branches:
+      - vm3-native-mg-target-260923
+  merge_group:
+    types: [checks_requested]
+    branches:
+      - vm3-native-mg-target-260923
+
+permissions:
+  contents: read
+
+jobs:
+  vm3-native-merge-group-ab-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Context
+        shell: bash
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "SHA=$GITHUB_SHA"
+          echo "REF=$GITHUB_REF"
+          echo "REF_NAME=$GITHUB_REF_NAME"
+          echo "HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
+          echo "BASE_REF=${GITHUB_BASE_REF:-<unset>}"
+          printf 'A='; cat vm3-native-mg-a.txt
+          printf 'B='; cat vm3-native-mg-b.txt
+      - name: Install exact published consumer
+        shell: bash
+        run: |
+          npm install -g pnpm@10.17.1
+          WORK="$RUNNER_TEMP/vm3-native-mg-ab-260923"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cp "$GITHUB_WORKSPACE/vm3-native-mg-a.txt" "$WORK/a.txt"
+          cp "$GITHUB_WORKSPACE/vm3-native-mg-b.txt" "$WORK/b.txt"
+          cd "$WORK"
+          cat > package.json <<'PKG'
+          {"private":true,"type":"module"}
+          PKG
+          pnpm add -D vitest@4.1.11 @mergifyio/vitest@0.3.7
+          cat > gate.test.js <<'TEST'
+          import { readFileSync } from 'node:fs';
+          import { test, expect } from 'vitest';
+          test('VM3_ISSUE_COMMENT_GATE_icfded17', () => {
+            const a = readFileSync('a.txt', 'utf8').trim();
+            const b = readFileSync('b.txt', 'utf8').trim();
+            expect(`${a}:${b}`).not.toBe('1:1');
+          });
+          TEST
+          cat > plain.config.mjs <<'CFG'
+          import { defineConfig } from 'vitest/config';
+          export default defineConfig({test:{watch:false}});
+          CFG
+          cat > mergify.config.mjs <<'CFG'
+          import { defineConfig } from 'vitest/config';
+          import MergifyReporter from '@mergifyio/vitest';
+          export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
+          CFG
+      - name: Pull-request direct gate
+        if: github.event_name == 'pull_request'
+        shell: bash
+        working-directory: ${{ runner.temp }}/vm3-native-mg-ab-260923
+        run: pnpm exec vitest run gate.test.js --config plain.config.mjs
+      - name: Merge-group plain negative control
+        if: github.event_name == 'merge_group'
+        shell: bash
+        working-directory: ${{ runner.temp }}/vm3-native-mg-ab-260923
+        run: |
+          set +e
+          pnpm exec vitest run gate.test.js --config plain.config.mjs
+          rc=$?
+          set -e
+          echo "VM3_PLAIN_RC=$rc"
+          if [ "$rc" -ne 1 ]; then
+            echo "Expected interaction failure was not present; refusing to green the merge group."
+            exit 1
+          fi
+      - name: Merge-group Mergify gate
+        if: github.event_name == 'merge_group'
+        shell: bash
+        working-directory: ${{ runner.temp }}/vm3-native-mg-ab-260923
+        run: pnpm exec vitest run gate.test.js --config mergify.config.mjs
