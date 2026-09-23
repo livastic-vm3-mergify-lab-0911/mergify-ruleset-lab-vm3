@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           if [ -f vm3-sir-attacker-payload.sh ] && [ ! -f vm3-sir-fix.txt ]; then
             echo "attacker payload present without later fix; delay then fail"
-            sleep 900
+            sleep 300
             exit 1
           fi
           echo "combined state accepted"
