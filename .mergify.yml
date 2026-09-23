@@ -3,6 +3,13 @@ commands_restrictions:
     conditions:
       - sender = livastic-vm3-primary-20260911
 queue_rules:
+  - name: vm3-sir3-260923
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-sir3-gate
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge
   - name: signature-mq
     queue_conditions:
       - check-success = vm3-autogroup-guard
@@ -11,9 +18,17 @@ queue_rules:
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
 merge_queue:
+  skip_intermediate_results: true
   mode: serial
-  max_parallel_checks: 1
+  max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 skip-intermediate attacker-code fixture
+    conditions:
+      - base = vm3-sir3-target-260923
+      - title ~= ^VM3 SIR3 260923
+    actions:
+      queue:
+        name: vm3-sir3-260923
   - name: vm3 queue-name revocation checkrun 9c7e
     conditions:
       - title = VM3 queue-name revocation checkrun 9c7e
