@@ -1,0 +1,22 @@
+name: VM3 last-PR batch failure regression gate
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: vm3-lastfail-batch-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fail when the second batch member is present
+        run: |
+          if [ -f batch-last-trigger.txt ]; then
+            echo "second batch member marker present: failing"
+            exit 1
+          fi
+          echo "second batch member marker absent: passing"
