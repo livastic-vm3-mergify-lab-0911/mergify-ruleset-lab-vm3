@@ -1,12 +1,44 @@
 name: VM3 skip-intermediate gate
 on:
   pull_request:
-    types: [opened, reopened, synchronize, labeled, unlabeled]
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - vm3-sir-target-260923
 permissions:
-  contents: read
+  contents: write
 jobs:
   gate:
+    if: github.event_name == 'pull_request'
     name: vm3-sir-gate
     runs-on: ubuntu-latest
     steps:
-      - run: echo "always pass"
+      - uses: actions/checkout@v4
+      - name: Fail PR1-alone but pass PR1-plus-PR2
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f vm3-sir-danger.txt ] && [ ! -f vm3-sir-fix.txt ]; then
+            echo "danger present without fix; delay then fail"
+            sleep 25
+            exit 1
+          fi
+          echo "safe combined state"
+  transient-impact:
+    if: github.event_name == 'push'
+    name: vm3-sir-transient-impact
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Materialize canary only for transient broken base state
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f vm3-sir-danger.txt ] && [ ! -f vm3-sir-fix.txt ]; then
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/git/refs"               -f ref='refs/heads/vm3-sir-transient-canary-260923'               -f sha="${GITHUB_SHA}"
+            echo "TRANSIENT_DANGER_PUSH_WITH_WRITE_TOKEN"
+          else
+            echo "not transient broken state"
+          fi
