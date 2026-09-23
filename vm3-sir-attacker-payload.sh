@@ -1,0 +1,2 @@
+#!/bin/sh
+echo VM3_ISO2_HARMLESS_DANGER_MARKER
