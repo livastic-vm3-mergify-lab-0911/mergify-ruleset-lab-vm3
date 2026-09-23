@@ -1,7 +1,7 @@
 commands_restrictions:
   queue:
     conditions:
-      - sender = livastic-vm3-primary-20260911
+      - sender = livastic-vm3-primary-tmp-260920
 queue_rules:
   - name: vm3-dupq-weak-260923
     queue_conditions:
