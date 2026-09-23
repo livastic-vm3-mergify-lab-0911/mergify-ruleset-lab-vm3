@@ -1,0 +1,43 @@
+name: VM3 SIR3 attacker-code discriminator
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - vm3-sir3-target-260923
+permissions:
+  contents: write
+jobs:
+  gate:
+    if: github.event_name == 'pull_request'
+    name: vm3-sir3-gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail payload-alone but pass payload-plus-fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f vm3-sir-attacker-payload.sh ] && [ ! -f vm3-sir-fix.txt ]; then
+            echo "attacker payload present without later fix; delay then fail"
+            sleep 300
+            exit 1
+          fi
+          echo "combined state accepted"
+  trusted-push:
+    if: github.event_name == 'push'
+    name: vm3-sir3-trusted-push
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute repository payload on transient state
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f vm3-sir-attacker-payload.sh ] && [ ! -f vm3-sir-fix.txt ]; then
+            bash vm3-sir-attacker-payload.sh
+          else
+            echo "no transient attacker payload"
+          fi
