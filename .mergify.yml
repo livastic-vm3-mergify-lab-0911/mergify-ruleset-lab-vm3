@@ -1,7 +1,7 @@
 commands_restrictions:
   queue:
     conditions:
-      - sender-permission >= write
+      - sender = livastic-vm3-primary-20260911
 queue_rules:
   - name: vm3-sir3-260923
     queue_conditions: []
