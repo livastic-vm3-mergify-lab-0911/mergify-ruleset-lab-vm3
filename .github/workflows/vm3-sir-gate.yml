@@ -20,7 +20,7 @@ jobs:
           set -euo pipefail
           if [ -f vm3-sir-danger.txt ] && [ ! -f vm3-sir-fix.txt ]; then
             echo "danger present without fix; delay then fail"
-            sleep 25
+            sleep 150
             exit 1
           fi
           echo "safe combined state"
