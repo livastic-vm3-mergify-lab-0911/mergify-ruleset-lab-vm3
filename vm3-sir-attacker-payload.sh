@@ -1,0 +1,2 @@
+#!/bin/sh
+echo VM3_ISO_MEMBER_B_DANGER_HARMLESS
