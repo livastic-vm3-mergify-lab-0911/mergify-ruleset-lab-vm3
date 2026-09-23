@@ -7,9 +7,8 @@ queue_rules:
     queue_conditions: []
     merge_conditions:
       - check-success = vm3-sir3-gate
-    batch_size: 2
-    batch_max_wait_time: 5 minutes
-    allow_inplace_checks: false
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
     merge_method: merge
   - name: signature-mq
     queue_conditions:
@@ -19,7 +18,8 @@ queue_rules:
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
 merge_queue:
-  mode: isolated
+  skip_intermediate_results: true
+  mode: serial
   max_parallel_checks: 2
 pull_request_rules:
   - name: vm3 skip-intermediate attacker-code fixture
