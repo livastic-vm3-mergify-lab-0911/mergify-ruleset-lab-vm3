@@ -1,3 +1,10 @@
+scopes:
+  source:
+    files:
+      all:
+        include:
+          - "**"
+
 commands_restrictions:
   queue:
     conditions:
