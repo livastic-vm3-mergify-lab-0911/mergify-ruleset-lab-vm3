@@ -8,7 +8,7 @@ queue_rules:
     merge_conditions:
       - check-success = vm3-sir3-gate
     batch_size: 2
-    batch_max_wait_time: 60 seconds
+    batch_max_wait_time: 5 minutes
     allow_inplace_checks: false
     merge_method: merge
   - name: signature-mq
