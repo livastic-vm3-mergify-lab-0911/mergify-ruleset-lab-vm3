@@ -1,0 +1,63 @@
+name: VM3 private runner ACL seed 260924
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  seed-one:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Mergifyio/setup-cli@dc99f07e699b94b39e5495c24596372813eadcbc
+        with:
+          mergify_cli_version: 2026.9.10.1
+      - name: Upload private runner sentinel job 1
+        env:
+          MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          PRIVATE_SHA: b478d9e6a54f98b372330051568fd04c86feff26
+        run: |
+          cat > /tmp/vm3-runner.xml <<'XML'
+          <testsuite name="vm3-private-runner-sentinel-suite" tests="1" failures="0"><testcase classname="vm3.private.runner" name="runner_acl_pass_1" time="0.01"/></testsuite>
+          XML
+          env -u GITHUB_ACTIONS \
+            BUILDKITE=1 \
+            BUILDKITE_REPO='https://github.com/livastic-vm3-mergify-lab-0911/vm3-graphql-foreign-private-gq9f17.git' \
+            BUILDKITE_PIPELINE_SLUG='vm3-private-runner-acl-260924' \
+            BUILDKITE_LABEL='vm3-private-runner-job' \
+            BUILDKITE_BUILD_ID='vm3-runner-acl-build-1' \
+            BUILDKITE_BUILD_URL='https://buildkite.invalid/vm3/private-runner/1' \
+            BUILDKITE_RETRY_COUNT=0 \
+            BUILDKITE_AGENT_NAME='vm3-private-runner-sentinel-260924' \
+            BUILDKITE_BRANCH='main' \
+            BUILDKITE_COMMIT="$PRIVATE_SHA" \
+            BUILDKITE_PULL_REQUEST_BASE_BRANCH='main' \
+            MERGIFY_TOKEN="$MERGIFY_TOKEN" \
+            mergify ci junit-process --color never --repository livastic-vm3-mergify-lab-0911/vm3-graphql-foreign-private-gq9f17 --tests-target-branch main /tmp/vm3-runner.xml
+  seed-two:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Mergifyio/setup-cli@dc99f07e699b94b39e5495c24596372813eadcbc
+        with:
+          mergify_cli_version: 2026.9.10.1
+      - name: Upload private runner sentinel job 2
+        env:
+          MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          PRIVATE_SHA: b478d9e6a54f98b372330051568fd04c86feff26
+        run: |
+          cat > /tmp/vm3-runner.xml <<'XML'
+          <testsuite name="vm3-private-runner-sentinel-suite" tests="1" failures="0"><testcase classname="vm3.private.runner" name="runner_acl_pass_2" time="0.01"/></testsuite>
+          XML
+          env -u GITHUB_ACTIONS \
+            BUILDKITE=1 \
+            BUILDKITE_REPO='https://github.com/livastic-vm3-mergify-lab-0911/vm3-graphql-foreign-private-gq9f17.git' \
+            BUILDKITE_PIPELINE_SLUG='vm3-private-runner-acl-260924' \
+            BUILDKITE_LABEL='vm3-private-runner-job' \
+            BUILDKITE_BUILD_ID='vm3-runner-acl-build-2' \
+            BUILDKITE_BUILD_URL='https://buildkite.invalid/vm3/private-runner/2' \
+            BUILDKITE_RETRY_COUNT=0 \
+            BUILDKITE_AGENT_NAME='vm3-private-runner-sentinel-260924' \
+            BUILDKITE_BRANCH='main' \
+            BUILDKITE_COMMIT="$PRIVATE_SHA" \
+            BUILDKITE_PULL_REQUEST_BASE_BRANCH='main' \
+            MERGIFY_TOKEN="$MERGIFY_TOKEN" \
+            mergify ci junit-process --color never --repository livastic-vm3-mergify-lab-0911/vm3-graphql-foreign-private-gq9f17 --tests-target-branch main /tmp/vm3-runner.xml
