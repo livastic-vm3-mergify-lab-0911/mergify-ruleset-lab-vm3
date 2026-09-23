@@ -18,7 +18,6 @@ queue_rules:
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
 merge_queue:
-  checking_label: vm3-checking-lifecycle-260924
   skip_intermediate_results: true
   mode: serial
   max_parallel_checks: 2
