@@ -50,11 +50,3 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260924
-
-  - name: vm3 protected delete mainlab 260924
-    conditions:
-      - closed
-      - title = VM3 PROTECTED DELETE MAINLAB 260924
-    actions:
-      delete_head_branch:
-        force: false
