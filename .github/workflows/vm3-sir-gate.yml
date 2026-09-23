@@ -1,0 +1,12 @@
+name: VM3 skip-intermediate gate
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+permissions:
+  contents: read
+jobs:
+  gate:
+    name: vm3-sir-gate
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "always pass"
