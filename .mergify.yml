@@ -7,7 +7,6 @@ queue_rules:
     queue_conditions: []
     merge_conditions:
       - check-success = vm3-sir-gate
-      - label = vm3-sir-allow-260923
     batch_size: 1
     batch_max_wait_time: 30 seconds
     merge_method: merge
