@@ -10,12 +10,6 @@ queue_rules:
     batch_size: 1
     batch_max_wait_time: 30 seconds
     merge_method: merge
-  - name: vm3-explicit-method-mq-260924
-    queue_conditions: []
-    merge_conditions: []
-    batch_size: 1
-    batch_max_wait_time: 5 seconds
-    merge_method: merge
   - name: signature-mq
     queue_conditions:
       - check-success = vm3-autogroup-guard
@@ -28,14 +22,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 explicit forbidden MQ method 260924
-    conditions:
-      - base = vm3-explicit-method-mq-base-260924
-      - title = VM3 EXPLICIT MQ METHOD 260924
-      - body = VM3_EXPLICIT_MQ_RELEASE_260924
-    actions:
-      queue:
-        name: vm3-explicit-method-mq-260924
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
