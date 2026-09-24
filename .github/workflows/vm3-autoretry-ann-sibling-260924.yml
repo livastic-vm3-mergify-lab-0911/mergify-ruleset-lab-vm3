@@ -1,0 +1,58 @@
+name: VM3 AutoRetry annotation sibling binding 260924
+
+on:
+  push:
+    branches:
+      - vm3-autoretry-ann-sibling-260924
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  victim-fail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Intentional victim failure without marker
+        run: |
+          echo "intentional victim failure; sibling annotation must not satisfy this job's log_pattern"
+          exit 1
+
+  sibling-marker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create sibling-only check annotation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARKER_B64: Vk0zX0FOTl9CSU5EXzI2MDkyNA==
+        run: |
+          python3 - <<'PY'
+          import base64, json, os
+          marker = base64.b64decode(os.environ['MARKER_B64']).decode()
+          payload = {
+            'name': 'vm3-sibling-annotation-only',
+            'head_sha': os.environ['GITHUB_SHA'],
+            'status': 'completed',
+            'conclusion': 'success',
+            'output': {
+              'title': 'Sibling-only annotation',
+              'summary': 'Controlled annotation on a separate successful check-run.',
+              'annotations': [{
+                'path': '.github/workflows/vm3-autoretry-ann-sibling-260924.yml',
+                'start_line': 1,
+                'end_line': 1,
+                'annotation_level': 'warning',
+                'message': marker,
+              }],
+            },
+          }
+          open('/tmp/check.json','w').write(json.dumps(payload))
+          PY
+          curl -fsS -o /dev/null \
+            -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs" \
+            --data-binary @/tmp/check.json
+          echo "sibling annotation check created"
