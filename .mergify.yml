@@ -44,12 +44,3 @@ pull_request_rules:
     actions:
       delete_head_branch:
         force: false
-  - name: vm3 required reviewer rename oldpath 260924
-    conditions:
-      - base = vm3-reviewer-pattern-base-260924
-      - author = livastic-vm3-secondary-20260911
-      - title = VM3 REQUIRED REVIEWER RENAME OLDPATH 260924
-      - body = VM3_REVIEWER_RENAME_RELEASE_260924
-    actions:
-      merge:
-        method: squash
