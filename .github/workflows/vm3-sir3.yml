@@ -18,10 +18,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [ -f vm3-product-disable-delay.txt ]; then
-            echo "controlled product-disable finalizer delay"
-            sleep 300
-          fi
           if [ -f vm3-sir-attacker-payload.sh ] && [ ! -f vm3-sir-fix.txt ]; then
             echo "attacker payload present without later fix; delay then fail"
             sleep 300
