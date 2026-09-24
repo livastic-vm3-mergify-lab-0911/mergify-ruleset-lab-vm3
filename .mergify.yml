@@ -37,10 +37,3 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-  - name: vm3 protected delete safety r4
-    conditions:
-      - closed
-      - title = VM3 PROTECTED DELETE R4 260924
-    actions:
-      delete_head_branch:
-        force: false
