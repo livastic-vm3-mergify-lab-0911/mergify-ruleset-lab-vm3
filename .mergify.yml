@@ -17,6 +17,13 @@ queue_rules:
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
+
+  - name: vm3-freeze-batch-260925
+    queue_conditions: []
+    merge_conditions: []
+    batch_size: 2
+    batch_max_wait_time: 5 minutes
+    merge_method: merge
 merge_queue:
   skip_intermediate_results: true
   mode: serial
@@ -37,3 +44,11 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
+
+  - name: vm3 scheduled-freeze exclusion batch 260925
+    conditions:
+      - base = vm3-freeze-batch-target-260925
+      - title ~= ^VM3 FREEZE BATCH 260925
+    actions:
+      queue:
+        name: vm3-freeze-batch-260925
