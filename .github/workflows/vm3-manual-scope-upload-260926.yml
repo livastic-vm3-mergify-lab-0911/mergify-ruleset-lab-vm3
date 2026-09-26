@@ -1,0 +1,44 @@
+name: VM3 Manual Scope Upload 260926
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: Commit SHA to attest
+        required: true
+        type: string
+      scopes_json:
+        description: JSON array of scope names
+        required: true
+        type: string
+      all_scopes:
+        description: Whether this commit is a barrier
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - name: Upload immutable commit scopes
+        shell: bash
+        env:
+          TARGET_SHA: ${{ inputs.sha }}
+          SCOPES_JSON: ${{ inputs.scopes_json }}
+          ALL_SCOPES: ${{ inputs.all_scopes }}
+        run: |
+          set -euo pipefail
+          BODY=$(jq -cn --argjson scopes "$SCOPES_JSON" --argjson all_scopes "$ALL_SCOPES" '{scopes:$scopes,all_scopes:$all_scopes}')
+          code=$(curl -sS -o response.txt -w '%{http_code}' \
+            -X PUT \
+            -H 'Accept: application/json' \
+            -H "Authorization: Bearer $MERGIFY_TOKEN" \
+            -H 'Content-Type: application/json' \
+            --data "$BODY" \
+            "https://api.mergify.com/v1/repos/$GITHUB_REPOSITORY/commits/$TARGET_SHA/scopes")
+          echo "HTTP=$code"
+          test "$code" = 204

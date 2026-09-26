@@ -2,6 +2,11 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+
+scopes:
+  source:
+    manual:
+
 queue_rules:
   - name: vm3-sir3-260923
     queue_conditions: []
@@ -17,17 +22,26 @@ queue_rules:
       - check-success = vm3-autogroup-guard
       - check-success = vm3-queue-name-hold-never
     merge_method: merge
-
   - name: vm3-freeze-batch-260925
     queue_conditions: []
     merge_conditions: []
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge
+  - name: vm3-direct-manualbarrier-260926
+    queue_conditions:
+      - check-success = vm3-autogroup-guard
+    merge_conditions:
+      - check-success = vm3-autogroup-guard
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge
+
 merge_queue:
   skip_intermediate_results: true
   mode: serial
   max_parallel_checks: 2
+
 pull_request_rules:
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
@@ -44,7 +58,6 @@ pull_request_rules:
     actions:
       comment:
         message: VM3_QUEUE_NAME_STALE_CHECKRUN_9C7E
-
   - name: vm3 scheduled-freeze exclusion batch 260925
     conditions:
       - base = vm3-freeze-batch-target-260925
@@ -52,3 +65,17 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
+  - name: vm3 manual all-scopes seed autoqueue 260926
+    conditions:
+      - base = vm3-direct-manualbarrier-base-260926
+      - title = VM3 MANUAL ALLSCOPES SEED 260926
+    actions:
+      queue:
+        name: vm3-direct-manualbarrier-260926
+  - name: vm3 manual all-scopes candidate autoqueue 260926
+    conditions:
+      - base = vm3-direct-manualbarrier-base-260926
+      - title = VM3 MANUAL ALLSCOPES GO 260926
+    actions:
+      queue:
+        name: vm3-direct-manualbarrier-260926
