@@ -6,7 +6,7 @@ permissions:
   contents: read
 jobs:
   provider-confusion:
-    if: github.event.pull_request.number == 76
+    if: github.head_ref == 'vm3-provider-confusion-source-260927'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
