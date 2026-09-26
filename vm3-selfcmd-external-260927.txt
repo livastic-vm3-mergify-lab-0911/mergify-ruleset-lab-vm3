@@ -1,1 +1,2 @@
 VM3 external self-command canary 260927
+synchronize 1
