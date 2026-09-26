@@ -1,0 +1,51 @@
+name: VM3 provider confusion cross-repo CI 260927
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+permissions:
+  contents: read
+jobs:
+  provider-confusion:
+    if: github.head_ref == 'vm3-provider-confusion-source-260927'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PR-controlled pre-reporter step without Mergify secret
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -n "${MERGIFY_TOKEN:-}" ]]; then
+            echo 'unexpected MERGIFY_TOKEN in attacker-controlled step'
+            exit 91
+          fi
+          echo 'ATTACKER_STEP_TOKEN_PRESENT=no'
+          bash ./vm3-provider-confusion-260927.sh
+      - name: Verify poisoned provider environment persisted
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "JENKINS_URL=$JENKINS_URL"
+          echo "GIT_URL=$GIT_URL"
+          echo "GIT_BRANCH=$GIT_BRANCH"
+          echo "CHANGE_TARGET=$CHANGE_TARGET"
+          echo "GIT_COMMIT=$GIT_COMMIT"
+          echo "JOB_NAME=$JOB_NAME"
+          test "$JENKINS_URL" = 'https://jenkins.invalid/vm3-provider-confusion'
+          test "$GIT_URL" = 'https://github.com/livastic-vm3-mergify-lab-0911/vm3-private-ci-acl-lab-20260913.git'
+          test "$GIT_BRANCH" = 'main'
+          test "$CHANGE_TARGET" = 'main'
+      - name: Official Mergify JUnit reporter
+        id: mergify
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: junit-process
+          token: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          report_path: vm3-provider-confusion-260927.xml
+          test_step_outcome: success
+          job_name: vm3-provider-confusion-crossrepo-260927
+      - name: Record reporter outcome
+        if: always()
+        env:
+          UPLOAD: ${{ steps.mergify.outputs.test_results_upload }}
+        run: echo "MERGIFY_UPLOAD=$UPLOAD"
