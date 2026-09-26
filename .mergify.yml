@@ -52,11 +52,3 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
-  - name: vm3 self-command copy emitter 260927
-    conditions:
-      - base = vm3-selfcmd-base-260927
-      - title = "@Mergifyio copy vm3-selfcmd-target-260927"
-      - body = VM3_SELF_COMMAND_REENTRY_260927
-    actions:
-      comment:
-        message: "{{ title }}"
