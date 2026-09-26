@@ -1,0 +1,38 @@
+name: VM3 CI application-key audience matrix 260921
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      MKEY: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - name: Read-only API audience matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://api.mergify.com'
+          auth=(-H "Authorization: Bearer ${MKEY}")
+          tmp="$RUNNER_TEMP/mresp"
+          probe() {
+            label="$1"; path="$2"
+            code=$(curl -sS -o "$tmp" -w '%{http_code}' "${auth[@]}" "$base$path")
+            bytes=$(wc -c < "$tmp" | tr -d ' ')
+            printf 'VM3_AUDIENCE %s HTTP=%s BYTES=%s\n' "$label" "$code" "$bytes"
+          }
+          code=$(curl -sS -o "$tmp" -w '%{http_code}' "${auth[@]}" "$base/v1/application")
+          printf 'VM3_AUDIENCE application HTTP=%s ' "$code"
+          if [ "$code" = 200 ]; then
+            jq -c '{id,name,scope,account_scope}' "$tmp"
+          else
+            printf 'BYTES=%s\n' "$(wc -c < "$tmp" | tr -d ' ')"
+          fi
+          probe ci_quarantines '/v1/ci/livastic-vm3-mergify-lab-0911/repositories/mergify-ruleset-lab-vm3/quarantines'
+          probe admin_activity_log '/v1/repos/livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3/logs?limit=1'
+          probe admin_queue_status '/v1/repos/livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3/merge-queue/status'
+          probe admin_freezes '/v1/repos/livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3/scheduled_freeze'
+          probe admin_defaults '/v1/default_products/livastic-vm3-mergify-lab-0911'
+          probe admin_queue_config '/v1/repos/livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3/queues/configuration'
