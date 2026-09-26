@@ -19,9 +19,9 @@ scopes:
 queue_rules:
   - name: vm3-direct-barrier-260926
     queue_conditions:
-      - check-success = vm3-direct-barrier-gate
+      - check-success = vm3-autogroup-guard
     merge_conditions:
-      - check-success = vm3-direct-barrier-gate
+      - check-success = vm3-autogroup-guard
     batch_size: 1
     batch_max_wait_time: 30 seconds
     merge_method: merge
