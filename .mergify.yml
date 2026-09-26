@@ -95,3 +95,19 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-direct-barrier2-260926
+
+  - name: vm3 direct barrier3 seed autoqueue 260926
+    conditions:
+      - base = vm3-direct-barrier3-base-260926
+      - title = VM3 DIRECT BARRIER3 SEED 260926
+    actions:
+      queue:
+        name: vm3-direct-barrier2-260926
+
+  - name: vm3 direct barrier3 candidate autoqueue 260926
+    conditions:
+      - base = vm3-direct-barrier3-base-260926
+      - title = VM3 DIRECT BARRIER3 GO 260926
+    actions:
+      queue:
+        name: vm3-direct-barrier2-260926
