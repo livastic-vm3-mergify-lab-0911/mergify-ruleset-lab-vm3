@@ -1,0 +1,1 @@
+VM3 source-close A must not land after withdrawal
