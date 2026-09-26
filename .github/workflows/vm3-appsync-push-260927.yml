@@ -1,0 +1,29 @@
+name: VM3 AppSync Fork Push
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: target branch
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  push-marker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 0
+      - name: Push App-authored marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p appsync
+          printf 'github-actions app push 260927\n' > appsync/trigger.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add appsync/trigger.txt
+          git commit -m 'test: GitHub App-authored fork head update' || exit 0
+          git push origin HEAD:"${{ inputs.branch }}"
