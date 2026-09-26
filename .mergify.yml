@@ -26,7 +26,7 @@ queue_rules:
 - name: vm3-source-close-finalizer-260926
   queue_conditions: []
   merge_conditions:
-  - current-datetime >= 2026-09-26T11:04:00Z
+  - current-datetime >= 2026-09-26T11:12:00Z
   batch_size: 2
   batch_max_wait_time: 30 seconds
   merge_method: merge-batch
