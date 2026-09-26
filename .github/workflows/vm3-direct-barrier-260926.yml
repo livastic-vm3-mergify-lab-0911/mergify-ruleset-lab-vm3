@@ -1,0 +1,22 @@
+name: VM3 Direct Barrier Gate
+on:
+  pull_request:
+    branches:
+      - vm3-direct-barrier-base-260926
+jobs:
+  vm3-direct-barrier-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Verify candidate against current global version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f alpha/expected.txt ]]; then
+            echo 'VM3 seed/no-alpha path: pass'
+            exit 0
+          fi
+          actual="$(cat global/version.txt)"
+          expected="$(cat alpha/expected.txt)"
+          echo "global=$actual expected=$expected"
+          test "$actual" = "$expected"
