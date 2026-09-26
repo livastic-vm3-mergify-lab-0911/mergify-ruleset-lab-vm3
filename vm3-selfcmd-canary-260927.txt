@@ -1,0 +1,1 @@
+VM3 self-command re-entry canary 260927
