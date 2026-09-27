@@ -1,0 +1,23 @@
+name: VM3 Workflow Run Protected Merge Source Org 260927
+on:
+  pull_request:
+    branches:
+      - vm3-wfr-chain-protected-base-260927
+permissions:
+  contents: read
+jobs:
+  deterministic-source-control:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deterministic policy control
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "SHA=$GITHUB_SHA"
+          echo "REF=$GITHUB_REF"
+          echo "BASE_REF=$GITHUB_BASE_REF"
+          echo "HEAD_REF=$GITHUB_HEAD_REF"
+          printf 'POLICY='; cat vm3-wfr-policy.txt
+          test "$(tr -d '\r\n' < vm3-wfr-policy.txt)" = SAFE
