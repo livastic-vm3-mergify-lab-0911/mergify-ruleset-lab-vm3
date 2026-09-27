@@ -69,7 +69,7 @@ jobs:
       TRIGGER_HEAD: ${{ github.event.workflow_run.head_sha }}
       EXPECTED_BASE: vm3-wfr-chain-protected-base-260927
       EXPECTED_ACTOR: livastic-vm3-secondary-20260911
-      EXPECTED_HEAD_REPO: livastic-vm3-secondary-20260911/mergify-ruleset-lab-vm3
+      EXPECTED_HEAD_REPO: livastic-vm3-mergify-lab-0911/mergify-ruleset-lab-vm3
     steps:
       - name: Validate exact external-fork target
         shell: bash
