@@ -35,6 +35,9 @@ jobs:
           if [[ "$WFR_HEAD_BRANCH" == *"autoq"* ]]; then
             TEST_NAME="autoq_test"
           fi
+          if [[ "$WFR_HEAD_BRANCH" == *"selfpoison"* ]]; then
+            TEST_NAME="selfpoison_health_260927_h9k3"
+          fi
           if [[ "$WFR_HEAD_BRANCH" == *"fail"* ]]; then
             cat > vm3-wfr-collision.xml <<XML
           <testsuite name="vm3-wfr-collision-suite" tests="1" failures="1">
