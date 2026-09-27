@@ -65,3 +65,46 @@ jobs:
         env:
           UPLOAD: ${{ steps.mergify-ci.outputs.test_results_upload }}
         run: echo "MERGIFY_UPLOAD=$UPLOAD"
+
+  vitest-selfpoison:
+    if: contains(github.event.workflow_run.head_branch, 'selfpoison-vitest')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Record Vitest workflow_run coordinates
+        run: |
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "SHA=$GITHUB_SHA"
+          echo "REF_NAME=$GITHUB_REF_NAME"
+          echo "BASE_REF=${GITHUB_BASE_REF:-<unset>}"
+          echo "HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
+          echo "TRIGGER_HEAD=${{ github.event.workflow_run.head_sha }}"
+          echo "TRIGGER_BRANCH=${{ github.event.workflow_run.head_branch }}"
+          echo "TRIGGER_EVENT=${{ github.event.workflow_run.event }}"
+      - name: Run deterministic Vitest self-poison identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORK="$RUNNER_TEMP/vm3-wfr-selfpoison-vitest-h9k3"
+          rm -rf "$WORK" && mkdir -p "$WORK" && cd "$WORK"
+          printf '%s\n' '{"private":true,"type":"module"}' > package.json
+          npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          cat > vitest.config.mjs <<'JS'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
+          JS
+          cat > vm3-wfr-selfpoison-vitest-h9k3.test.js <<'JS'
+          import { describe, it, expect } from 'vitest';
+          describe('vm3-wfr-selfpoison-vitest-h9k3',()=>{
+            it('deterministic-poison',()=>{ expect('SAFE').toBe('BROKEN'); });
+          });
+          JS
+          npx vitest run vm3-wfr-selfpoison-vitest-h9k3.test.js --config vitest.config.mjs
+      - name: Vitest post-test sentinel
+        run: echo "VITEST_SELF_POISON_SENTINEL_EXECUTED trigger=${{ github.event.workflow_run.head_sha }}"
