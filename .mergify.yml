@@ -24,6 +24,13 @@ queue_rules:
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge
+
+  - name: vm3-rreview-pattern-260927
+    queue_conditions: []
+    merge_conditions: []
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge
 merge_queue:
   skip_intermediate_results: true
   mode: serial
@@ -52,3 +59,11 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
+
+  - name: vm3 required reviewer pattern parity 260927
+    conditions:
+      - base = vm3-rreview-pattern-target-260927
+      - title = VM3 RREVIEW PATTERN 260927
+    actions:
+      queue:
+        name: vm3-rreview-pattern-260927
