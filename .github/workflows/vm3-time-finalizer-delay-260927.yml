@@ -1,0 +1,16 @@
+name: VM3 delayed PR check
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  delayed-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Wait 90 seconds
+        run: sleep 90
+      - name: Report success
+        run: echo "VM3 delayed PR check succeeded"
