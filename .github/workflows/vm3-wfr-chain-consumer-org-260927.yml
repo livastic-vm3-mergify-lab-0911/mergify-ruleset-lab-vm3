@@ -1,0 +1,103 @@
+name: VM3 Workflow Run Protected Merge Consumer Org 260927
+on:
+  workflow_run:
+    workflows: ["VM3 Workflow Run Protected Merge Source Org 260927"]
+    types: [completed]
+jobs:
+  test:
+    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.pull_requests[0].number != null }}
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run exact PR head through released Mergify Vitest
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "EVENT=$GITHUB_EVENT_NAME"
+          echo "SHA=$GITHUB_SHA"
+          echo "REF_NAME=$GITHUB_REF_NAME"
+          echo "BASE_REF=${GITHUB_BASE_REF:-<unset>}"
+          echo "HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
+          echo "TRIGGER_HEAD=${{ github.event.workflow_run.head_sha }}"
+          echo "TRIGGER_BRANCH=${{ github.event.workflow_run.head_branch }}"
+          echo "TRIGGER_EVENT=${{ github.event.workflow_run.event }}"
+          echo "TRIGGER_CONCLUSION=${{ github.event.workflow_run.conclusion }}"
+          echo "TRIGGER_PR=${{ github.event.workflow_run.pull_requests[0].number }}"
+          echo "CHECKED_OUT=$(git rev-parse HEAD)"
+          printf 'POLICY='; cat "$GITHUB_WORKSPACE/vm3-wfr-policy.txt"
+          WORK="$RUNNER_TEMP/vm3-wfr-protected-merge-org"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cd "$WORK"
+          cat > package.json <<'JSON'
+          {"private":true,"type":"module"}
+          JSON
+          npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.10 @mergifyio/vitest@0.3.7
+          cat > workflow-run.test.js <<'TEST'
+          import fs from 'node:fs';
+          import { it, expect } from 'vitest';
+          it('vm3.wfr.autoq_test', () => {
+            const value = fs.readFileSync(process.env.GITHUB_WORKSPACE + '/vm3-wfr-policy.txt', 'utf8').trim();
+            expect(value).toBe('SAFE');
+          });
+          TEST
+          cat > vitest.config.mjs <<'CFG'
+          import { defineConfig } from 'vitest/config';
+          import { MergifyReporter } from '@mergifyio/vitest';
+          export default defineConfig({ test: { watch: false, reporters: ['default', new MergifyReporter()] } });
+          CFG
+          npx vitest run workflow-run.test.js --config vitest.config.mjs
+  promote:
+    needs: test
+    permissions:
+      checks: write
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      TRIGGER_HEAD: ${{ github.event.workflow_run.head_sha }}
+      EXPECTED_BASE: vm3-wfr-chain-protected-base-260927
+      EXPECTED_ACTOR: livastic-vm3-secondary-20260911
+      EXPECTED_HEAD_REPO: livastic-vm3-secondary-20260911/mergify-ruleset-lab-vm3
+    steps:
+      - name: Validate exact external-fork target
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" > "$RUNNER_TEMP/pr.json"
+          jq '{number,state,user:.user.login,base:.base.ref,head:.head.ref,head_sha:.head.sha,head_repo:.head.repo.full_name,merged}' "$RUNNER_TEMP/pr.json"
+          test "$(jq -r .state "$RUNNER_TEMP/pr.json")" = open
+          test "$(jq -r .merged "$RUNNER_TEMP/pr.json")" = false
+          test "$(jq -r .user.login "$RUNNER_TEMP/pr.json")" = "$EXPECTED_ACTOR"
+          test "$(jq -r .base.ref "$RUNNER_TEMP/pr.json")" = "$EXPECTED_BASE"
+          test "$(jq -r .head.sha "$RUNNER_TEMP/pr.json")" = "$TRIGGER_HEAD"
+          test "$(jq -r .head.repo.full_name "$RUNNER_TEMP/pr.json")" = "$EXPECTED_HEAD_REPO"
+      - name: Publish trusted required gate on exact PR head
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api -X POST "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name='vm3-workflow-run-gate' \
+            -f head_sha="$TRIGGER_HEAD" \
+            -f status='completed' \
+            -f conclusion='success' > "$RUNNER_TEMP/check.json"
+          jq '{id,name,status,conclusion,head_sha,app:{id:.app.id,slug:.app.slug}}' "$RUNNER_TEMP/check.json"
+      - name: Merge through native GitHub ruleset
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/merge" \
+            -f sha="$TRIGGER_HEAD" \
+            -f merge_method='merge' \
+            --jq '{merged,message,sha}'
