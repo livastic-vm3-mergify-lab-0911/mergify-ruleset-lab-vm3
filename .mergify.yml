@@ -6,7 +6,7 @@ queue_rules:
   - name: vm3-sir3-260923
     queue_conditions: []
     merge_conditions:
-      - check-success = vm3-sir3-gate
+      - check-success = vm3-pw-backslash-gate-260929
     batch_size: 1
     batch_max_wait_time: 30 seconds
     merge_method: merge
