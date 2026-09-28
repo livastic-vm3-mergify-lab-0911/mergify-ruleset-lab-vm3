@@ -1,0 +1,36 @@
+name: VM3 Playwright backslash gate 260929
+on:
+  pull_request:
+    branches:
+      - vm3-sir3-target-260923
+permissions:
+  contents: read
+jobs:
+  vm3-sir3-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run released Playwright Mergify gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORK="$RUNNER_TEMP/vm3-pw-backslash-260929"
+          rm -rf "$WORK" && mkdir -p "$WORK"
+          cp -a tests "$WORK/tests"
+          cd "$WORK"
+          cat > package.json <<'PKG'
+          {"private":true,"type":"module"}
+          PKG
+          npm install --legacy-peer-deps --no-audit --no-fund @playwright/test@1.62.1 @mergifyio/playwright@0.4.0
+          cat > playwright.config.mjs <<'CFG'
+          import { defineConfig } from '@playwright/test';
+          import { withMergify } from '@mergifyio/playwright';
+          export default withMergify(defineConfig({testDir:'./tests',workers:1,reporter:[['list']]}));
+          CFG
+          npx playwright test --config playwright.config.mjs
