@@ -6,7 +6,8 @@ on:
 permissions:
   contents: read
 jobs:
-  vm3-sir3-gate:
+  vm3-pw-backslash-gate-260929:
+    name: vm3-pw-backslash-gate-260929
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
