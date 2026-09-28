@@ -25,7 +25,7 @@ jobs:
           cp -a tests "$WORK/tests"
           cd "$WORK"
           cat > package.json <<'PKG'
-          {"private":true,"type":"module"}
+          {"private":true}
           PKG
           npm install --legacy-peer-deps --no-audit --no-fund @playwright/test@1.62.1 @mergifyio/playwright@0.4.0
           cat > playwright.config.mjs <<'CFG'
