@@ -52,3 +52,11 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
+
+  - name: vm3 classic restrictions probe 260930
+    conditions:
+      - base = vm3-classic-restrict-target-260930
+      - title = VM3 CLASSIC RESTRICTIONS PROBE 260930
+    actions:
+      merge:
+        method: merge
