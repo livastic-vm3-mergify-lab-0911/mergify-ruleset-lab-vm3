@@ -37,6 +37,13 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+- name: vm3-note-alias-seed-autoqueue-261004
+  conditions:
+  - base = vm3-note-alias-sourcebase-261004
+  - title = VM3_NOTE_ALIAS_SEED_261004
+  actions:
+    queue:
+      name: vm3-note-alias-seed-261004
 - name: vm3 skip-intermediate attacker-code fixture
   conditions:
   - base = vm3-sir3-target-260923
