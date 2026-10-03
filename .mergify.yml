@@ -2,6 +2,15 @@ commands_restrictions:
   queue:
     conditions:
       - sender = livastic-vm3-primary-20260911
+scopes:
+  source:
+    files:
+      vm3-dm-docs:
+        include:
+          - vm3-dm-extbase/docs/**
+      vm3-dm-core:
+        include:
+          - vm3-dm-extbase/core/**
 queue_rules:
   - name: vm3-sir3-260923
     queue_conditions: []
@@ -24,6 +33,14 @@ queue_rules:
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge
+
+  - name: vm3-directmerge-extbase-261004
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-directmerge-extbase-guard
+    batch_size: 1
+    batch_max_wait_time: 15 seconds
+    merge_method: squash
 merge_queue:
   skip_intermediate_results: true
   mode: serial
@@ -52,3 +69,12 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
+
+  - name: vm3 directmerge external-base freshness 261004
+    conditions:
+      - base = vm3-dm-extbase-target-261004
+      - title ~= ^VM3 DM EXTBASE 261004
+      - check-success = vm3-directmerge-extbase-guard
+    actions:
+      queue:
+        name: vm3-directmerge-extbase-261004
