@@ -1,0 +1,33 @@
+name: VM3 check-flood pagination probe
+on:
+  pull_request:
+    branches:
+      - vm3-checkflood-base-261004-a1
+permissions:
+  contents: read
+  checks: write
+jobs:
+  flood:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const sha = context.payload.pull_request.head.sha;
+            await github.rest.checks.create({
+              owner, repo,
+              name: 'vm3-checkflood-old-failure-a1',
+              head_sha: sha,
+              status: 'completed',
+              conclusion: 'failure'
+            });
+            for (let i = 0; i < 120; i++) {
+              await github.rest.checks.create({
+                owner, repo,
+                name: 'vm3-checkflood-success-a1-' + String(i).padStart(3, '0'),
+                head_sha: sha,
+                status: 'completed',
+                conclusion: 'success'
+              });
+            }
