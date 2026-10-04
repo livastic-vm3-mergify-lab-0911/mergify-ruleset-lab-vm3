@@ -75,7 +75,6 @@ pull_request_rules:
     conditions:
       - base = main
       - title = VM3 FILE SCOPE RENAME 261004 A7K3
-      - author = livastic-vm3-secondary-20260911
     actions:
       queue:
         name: vm3-file-scope-rename-261004
