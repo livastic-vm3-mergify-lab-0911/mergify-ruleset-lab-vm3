@@ -62,3 +62,26 @@ pull_request_rules:
     actions:
       merge:
         method: squash
+
+  - name: vm3 yaml config split impact 261004
+    conditions:
+      - base = main
+      - title = VM3 YAML CONFIG SPLIT IMPACT 261004
+      - author = livastic-vm3-secondary-20260911
+      - check-success = vm3-yaml-split-gate-261004
+    actions:
+      merge:
+        method: squash
+
+scopes:
+  source:
+    files:
+      critical:
+        include:
+          - 'security/**'
+      ordinary:
+        include:
+          - 'app/**'
+  capacities:
+    critical: 1
+    ordinary: 1

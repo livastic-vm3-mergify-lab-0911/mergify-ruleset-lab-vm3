@@ -1,0 +1,59 @@
+name: VM3 YAML config split gate 261004
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  scope-gate:
+    if: github.event.pull_request.title == 'VM3 YAML CONFIG SPLIT IMPACT 261004'
+    name: vm3-yaml-split-gate-261004
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: First-party v26 scope detection
+        id: old_scopes
+        uses: Mergifyio/gha-mergify-ci@v26
+        with:
+          action: scopes
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+
+      - name: Log first-party v26 result
+        env:
+          OLD_SCOPES: ${{ steps.old_scopes.outputs.scopes }}
+        run: |
+          echo "VM3_V26_SCOPES=$OLD_SCOPES"
+          echo "VM3_V26_CRITICAL=$(jq -r '.critical // "missing"' <<<"$OLD_SCOPES")"
+
+      - name: Install current CLI control
+        uses: Mergifyio/setup-cli@v1.3.0
+        with:
+          mergify_cli_version: 2026.10.1
+
+      - name: Current CLI same-diff control
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mergify --version
+          mergify ci scopes --base "$BASE" --head "$HEAD" --write current-scopes.json
+          cat current-scopes.json
+          jq -e '.scopes | index("critical") != null' current-scopes.json
+          echo "VM3_CURRENT_CRITICAL=true"
+
+      - name: Security scope guard
+        if: fromJSON(steps.old_scopes.outputs.scopes).critical == 'true'
+        run: |
+          echo "VM3_CRITICAL_SCOPE_DETECTED_BY_V26=true"
+          exit 1
+
+      - name: Aggregate gate
+        run: echo "VM3_YAML_SPLIT_GATE=PASS"
