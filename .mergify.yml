@@ -24,6 +24,14 @@ queue_rules:
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge
+
+  - name: vm3-file-scope-rename-261004
+    queue_conditions: []
+    merge_conditions:
+      - check-success = vm3-file-scope-never-261004
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge
 merge_queue:
   skip_intermediate_results: true
   mode: serial
@@ -62,3 +70,19 @@ pull_request_rules:
     actions:
       merge:
         method: squash
+
+  - name: vm3 file-scope rename oldpath gate 261004
+    conditions:
+      - base = main
+      - title = VM3 FILE SCOPE RENAME 261004 A7K3
+      - author = livastic-vm3-secondary-20260911
+    actions:
+      queue:
+        name: vm3-file-scope-rename-261004
+
+scopes:
+  source:
+    files:
+      secure:
+        include:
+          - vm3-scope-old/policy.txt
