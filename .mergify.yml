@@ -52,3 +52,13 @@ pull_request_rules:
     actions:
       queue:
         name: vm3-freeze-batch-260925
+
+  - name: vm3 CircleCI quarantine impact 261004
+    conditions:
+      - base = main
+      - title = VM3 CIRCLECI QUARANTINE IMPACT 261004
+      - author = livastic-vm5-secondary-20260911
+      - check-success = vm3-circleci-quarantine-impact-261004
+    actions:
+      merge:
+        method: squash
