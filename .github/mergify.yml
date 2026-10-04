@@ -1,0 +1,8 @@
+scopes:
+  source:
+    files:
+      ordinary:
+        include:
+          - 'app/**'
+  capacities:
+    ordinary: 1
