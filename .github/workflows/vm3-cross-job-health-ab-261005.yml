@@ -1,6 +1,8 @@
 name: VM3 cross-job unhealthy identity AB 261005
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - vm3-crossjob-health-ab-261005
 permissions:
   contents: read
 
@@ -18,17 +20,20 @@ jobs:
       - name: Install released consumer
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/vm3-crossjob-health-261005"
-          cd "$RUNNER_TEMP/vm3-crossjob-health-261005"
+          WORK="$RUNNER_TEMP/vm3-crossjob-health-261005"
+          rm -rf "$WORK"
+          mkdir -p "$WORK"
+          cd "$WORK"
           printf '%s\n' '{"private":true,"type":"module"}' > package.json
           npm install --legacy-peer-deps --no-audit --no-fund vitest@4.1.11 @mergifyio/vitest@0.4.3
 
-      - name: Run clean-name and colliding-name A/B
+      - name: Same-body clean-name versus cross-job unhealthy-name
         shell: bash
         run: |
           set -euo pipefail
           WORK="$RUNNER_TEMP/vm3-crossjob-health-261005"
           cd "$WORK"
+
           cat > vitest.config.mjs <<'JS'
           import { defineConfig } from 'vitest/config';
           import { MergifyReporter } from '@mergifyio/vitest';
@@ -44,7 +49,7 @@ jobs:
 
           cat > treatment.test.js <<'JS'
           import { it, expect } from 'vitest';
-          it('vm3.wfr.same_test', () => {
+          it('VM3_ISSUE_COMMENT_GATE_icfded17', () => {
             expect('SAFE').toBe('BROKEN');
           });
           JS
@@ -60,12 +65,15 @@ jobs:
           echo "VM3_JOB=$GITHUB_JOB"
           echo "VM3_SHA=$GITHUB_SHA"
           echo "VM3_EVENT=$GITHUB_EVENT_NAME"
+          echo "VM3_REF=$GITHUB_REF"
+          echo "VM3_BASE_REF=${GITHUB_BASE_REF:-<unset>}"
+          echo "VM3_HEAD_REF=${GITHUB_HEAD_REF:-<unset>}"
           echo "CONTROL_RC=$control_rc"
           echo "TREATMENT_RC=$treatment_rc"
           echo "=== CONTROL MERGIFY LINES ==="
-          grep -E 'Mergify|Flaky detection|mode:|Tests rerun|Unhealthy|Quarant|Test Files|Tests ' control.log || true
+          grep -E 'Mergify|Flaky detection|mode:|Tests rerun|Test Files|Tests ' control.log || true
           echo "=== TREATMENT MERGIFY LINES ==="
-          grep -E 'Mergify|Flaky detection|mode:|Tests rerun|Unhealthy|Quarant|Test Files|Tests ' treatment.log || true
+          grep -E 'Mergify|Flaky detection|mode:|Tests rerun|Test Files|Tests ' treatment.log || true
 
           test "$control_rc" -eq 1
           test "$treatment_rc" -eq 0
