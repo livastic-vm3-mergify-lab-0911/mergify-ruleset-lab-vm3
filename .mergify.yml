@@ -1,7 +1,7 @@
 commands_restrictions:
   queue:
     conditions:
-      - sender = livastic-vm3-primary-20260911
+      - sender-permission >= write
 queue_rules:
   - name: vm3-sir3-260923
     queue_conditions: []
@@ -24,6 +24,14 @@ queue_rules:
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge
+  - name: vm3-pending-authz-261006
+    queue_conditions:
+      - base = vm3-pending-authz-target-261006
+      - files = ready.txt
+    merge_conditions: []
+    batch_size: 1
+    merge_method: merge
+
 merge_queue:
   skip_intermediate_results: true
   mode: serial
