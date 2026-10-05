@@ -34,7 +34,7 @@ jobs:
           import { MergifyReporter } from '@mergifyio/vitest';
           export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
           JS
-          cat > test.js <<'JS'
+          cat > case.test.js <<'JS'
           import { it, expect } from 'vitest';
           it('vm3.crossjob.control.261005.q7k9', () => {
             expect('SAFE').toBe('BROKEN');
@@ -43,7 +43,7 @@ jobs:
           echo "VM3_PIPELINE=$GITHUB_WORKFLOW"
           echo "VM3_JOB=$GITHUB_JOB"
           echo "VM3_EVENT=$GITHUB_EVENT_NAME"
-          npx vitest run test.js --config vitest.config.mjs
+          npx vitest run case.test.js --config vitest.config.mjs
       - name: Control write canary must stay unreachable
         env:
           GH_TOKEN: ${{ github.token }}
@@ -81,7 +81,7 @@ jobs:
           import { MergifyReporter } from '@mergifyio/vitest';
           export default defineConfig({test:{watch:false,reporters:['default',new MergifyReporter()]}});
           JS
-          cat > test.js <<'JS'
+          cat > case.test.js <<'JS'
           import { it, expect } from 'vitest';
           it('VM3_ISSUE_COMMENT_GATE_icfded17', () => {
             expect('SAFE').toBe('BROKEN');
@@ -90,7 +90,7 @@ jobs:
           echo "VM3_PIPELINE=$GITHUB_WORKFLOW"
           echo "VM3_JOB=$GITHUB_JOB"
           echo "VM3_EVENT=$GITHUB_EVENT_NAME"
-          npx vitest run test.js --config vitest.config.mjs
+          npx vitest run case.test.js --config vitest.config.mjs
       - name: Treatment-only base repository write canary
         env:
           GH_TOKEN: ${{ github.token }}
