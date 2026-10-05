@@ -1,0 +1,37 @@
+name: VM3 test provider cross-tenant GET 261005
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - name: Cross-tenant read-only discriminator
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MERGIFY_TOKEN:-}"
+          probe() {
+            label="$1"; url="$2"; out="/tmp/${label}.json"
+            code=$(curl -sS -o "$out" -w '%{http_code}' -H "Authorization: Bearer ${MERGIFY_TOKEN}" "$url")
+            echo "${label}_status=${code}"
+            python3 - "$label" "$out" <<'PY'
+          import json,sys,os
+          label,path=sys.argv[1:]
+          try:
+              d=json.load(open(path))
+          except Exception:
+              print(f"{label}_json=false bytes={os.path.getsize(path)}")
+              raise SystemExit
+          print(f"{label}_json=true keys={','.join(sorted(d)[:20])}")
+          for k in ('existing_test_names','unhealthy_test_names','flaky_test_names','broken_test_names'):
+              v=d.get(k)
+              if isinstance(v,list): print(f"{label}_{k}_count={len(v)}")
+          PY
+          }
+          probe own 'https://api.mergify.com/v1/ci/livastic-vm3-mergify-lab-0911/repositories/mergify-ruleset-lab-vm3/flaky-detection-context'
+          probe pytest 'https://api.mergify.com/v1/ci/Mergifyio/repositories/pytest-mergify/flaky-detection-context'
+          probe rspec 'https://api.mergify.com/v1/ci/Mergifyio/repositories/rspec-mergify/flaky-detection-context'
