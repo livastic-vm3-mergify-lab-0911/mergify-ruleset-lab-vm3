@@ -32,11 +32,39 @@ queue_rules:
     batch_size: 1
     merge_method: merge
 
+  - name: vm3-prefer-ours-261006
+    queue_conditions:
+      - base = vm3-prefer-ours-target-261006
+    merge_conditions: []
+    batch_size: 2
+    batch_max_wait_time: 5 minutes
+    merge_method: merge
+    conflict_resolvers:
+      - paths:
+          - policy.txt
+        strategy: prefer-ours
+
 merge_queue:
   skip_intermediate_results: true
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+
+  - name: VM3 prefer-ours trusted A 261006
+    conditions:
+      - base = vm3-prefer-ours-target-261006
+      - title = VM3 PREFER OURS TRUSTED A 261006
+    actions:
+      queue:
+        name: vm3-prefer-ours-261006
+  - name: VM3 prefer-ours external B 261006
+    conditions:
+      - base = vm3-prefer-ours-target-261006
+      - title = VM3 PREFER OURS EXTERNAL B 261006
+      - author = livastic-vm5-secondary-20260911
+    actions:
+      queue:
+        name: vm3-prefer-ours-261006
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
