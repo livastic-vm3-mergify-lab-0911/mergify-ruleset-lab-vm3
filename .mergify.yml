@@ -39,10 +39,15 @@ queue_rules:
 
   - name: vm3-pnpm-same-dep-261006
     queue_conditions:
-      - base = vm3-pnpm-base-261006
+      - base = vm3-pnpm-batch-base-261006
     merge_conditions: []
-    batch_size: 1
-    merge_method: fast-forward
+    batch_size: 2
+    batch_max_wait_time: 5 minutes
+    merge_method: merge-batch
+    conflict_resolvers:
+      - paths:
+          - pnpm-lock.yaml
+        strategy: pnpm
 
 merge_queue:
   skip_intermediate_results: true
