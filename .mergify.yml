@@ -1,3 +1,8 @@
+conflict_resolvers:
+  - paths:
+      - pnpm-lock.yaml
+    strategy: pnpm
+
 commands_restrictions:
   queue:
     conditions:
@@ -31,6 +36,13 @@ queue_rules:
     merge_conditions: []
     batch_size: 1
     merge_method: merge
+
+  - name: vm3-pnpm-same-dep-261006
+    queue_conditions:
+      - base = vm3-pnpm-base-261006
+    merge_conditions: []
+    batch_size: 1
+    merge_method: merge-batch
 
 merge_queue:
   skip_intermediate_results: true
