@@ -42,7 +42,7 @@ queue_rules:
       - base = vm3-pnpm-base-261006
     merge_conditions: []
     batch_size: 1
-    merge_method: merge-batch
+    merge_method: fast-forward
 
 merge_queue:
   skip_intermediate_results: true
