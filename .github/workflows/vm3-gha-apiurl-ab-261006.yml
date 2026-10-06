@@ -1,0 +1,52 @@
+name: VM3 gha v26 API URL env shadow A-B
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  omitted-input:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_API_URL: http://127.0.0.1:9
+    steps:
+      - name: Write tiny JUnit
+        shell: bash
+        run: |
+          cat > report.xml <<'EOF'
+          <testsuite name="vm3" tests="1" failures="0">
+            <testcase classname="vm3" name="sentinel" time="0.001"/>
+          </testsuite>
+          EOF
+      - name: Run official action with input omitted
+        id: mergify
+        uses: Mergifyio/gha-mergify-ci@v26
+        with:
+          action: junit-process
+          token: VM3_NONSECRET_SENTINEL_261006
+          report_path: report.xml
+      - name: Record action result
+        run: echo "VM3_OMITTED_RESULT=${{ steps.mergify.outputs.test_results_upload }}"
+
+  explicit-localhost:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_API_URL: http://127.0.0.1:9
+    steps:
+      - name: Write tiny JUnit
+        shell: bash
+        run: |
+          cat > report.xml <<'EOF'
+          <testsuite name="vm3" tests="1" failures="0">
+            <testcase classname="vm3" name="sentinel" time="0.001"/>
+          </testsuite>
+          EOF
+      - name: Run official action with explicit localhost input
+        id: mergify
+        uses: Mergifyio/gha-mergify-ci@v26
+        with:
+          action: junit-process
+          token: VM3_NONSECRET_SENTINEL_261006
+          mergify_api_url: http://127.0.0.1:9
+          report_path: report.xml
+      - name: Record action result
+        run: echo "VM3_EXPLICIT_RESULT=${{ steps.mergify.outputs.test_results_upload }}"
