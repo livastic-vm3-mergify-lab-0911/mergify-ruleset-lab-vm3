@@ -2,6 +2,9 @@ conflict_resolvers:
   - paths:
       - pnpm-lock.yaml
     strategy: pnpm
+  - paths:
+      - vm3-json-reorder-policy.json
+    strategy: json
 
 commands_restrictions:
   queue:
@@ -43,6 +46,16 @@ queue_rules:
     merge_conditions: []
     batch_size: 1
     merge_method: fast-forward
+
+  - name: vm3-jsonreorder-forcedbatch-261007
+    queue_conditions:
+      - base = vm3-jsonreorder-base-261007
+      - title = VM3 JSON REORDER FORCED 261007
+    merge_conditions:
+      - check-success = vm3-jsonreorder-never-261007
+    batch_size: 2
+    batch_max_wait_time: 5 minutes
+    merge_method: merge-batch
 
 merge_queue:
   skip_intermediate_results: true
