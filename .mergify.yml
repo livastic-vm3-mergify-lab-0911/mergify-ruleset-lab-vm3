@@ -70,3 +70,16 @@ pull_request_rules:
     actions:
       merge:
         method: squash
+
+conflict_resolvers:
+  - paths:
+      - pnpm-lock.yaml
+    strategy: pnpm
+
+queue_rules:
+  - name: vm3-pnpm-same-dep-261006
+    queue_conditions:
+      - base = vm3-pnpm-base-261006
+    merge_conditions: []
+    batch_size: 1
+    merge_method: merge-batch
