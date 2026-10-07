@@ -62,6 +62,14 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 classic strict freshness 261007
+    conditions:
+      - base = vm3-classic-strict-target-261007
+      - title = VM3 CLASSIC STRICT FRESHNESS 261007
+      - label = vm3-strict-trigger-261007
+    actions:
+      merge:
+        method: squash
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
