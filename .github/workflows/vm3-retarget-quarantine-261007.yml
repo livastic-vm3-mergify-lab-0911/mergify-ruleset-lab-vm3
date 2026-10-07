@@ -1,0 +1,40 @@
+name: VM3 quarantine base-retarget gate 261007
+on:
+  pull_request:
+    branches:
+      - vm3-sir3-target-260923
+      - vm3-retarget-quarantine-b-261007
+    types: [opened, reopened, synchronize]
+permissions:
+  contents: read
+jobs:
+  gate:
+    name: vm3-retarget-quarantine-gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Mergifyio/setup-cli@v1.3.0
+        with:
+          mergify_cli_version: 2026.10.3
+      - name: Record Mergify coordinates
+        run: |
+          mergify --version
+          mergify ci git-refs --format json
+          echo "BASE=${{ github.base_ref }}"
+          echo "HEAD=${{ github.head_ref }}"
+          echo "SHA=${{ github.event.pull_request.head.sha }}"
+      - name: Generate deterministic failure
+        run: |
+          cat > /tmp/vm3-retarget.xml <<'XML'
+          <testsuite name="vm3-retarget" tests="1" failures="1">
+            <testcase name="tests/dir/gate.spec.js &gt; security gate">
+              <failure message="VM3_RETARGET_QUARANTINE_FAIL_261007">VM3_RETARGET_QUARANTINE_FAIL_261007</failure>
+            </testcase>
+          </testsuite>
+          XML
+      - name: Mergify quarantine verdict
+        run: |
+          mergify ci junit-process --color never /tmp/vm3-retarget.xml
