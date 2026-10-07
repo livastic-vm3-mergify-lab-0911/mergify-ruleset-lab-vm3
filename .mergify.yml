@@ -1,3 +1,13 @@
+scopes:
+  source:
+    files:
+      dm_base:
+        include:
+          - vm3-dmgen/base/**/*
+      dm_victim:
+        include:
+          - vm3-dmgen/victim/**/*
+
 conflict_resolvers:
   - paths:
       - pnpm-lock.yaml
@@ -11,6 +21,14 @@ commands_restrictions:
     conditions:
       - sender-permission >= write
 queue_rules:
+  - name: vm3-dmgen-261007
+    queue_conditions:
+      - base = vm3-dmgen-base-261007
+      - title ~= ^VM3 DMGEN 261007
+    merge_conditions: []
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge
   - name: vm3-sir3-260923
     queue_conditions: []
     merge_conditions:
@@ -62,12 +80,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 same head sha title isolation 261007
-    conditions:
-      - title = VM3 SAME SHA ISOLATION 261007 A
-    actions:
-      comment:
-        message: VM3_SAME_SHA_TITLE_A_MATCH_261007
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
