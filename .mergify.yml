@@ -62,6 +62,20 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 team picker slug control 261007
+    conditions:
+      - title = VM3 TEAM PICKER RUNTIME 261007
+      - review-requested = @vm3-security-reviewers-261007
+    actions:
+      comment:
+        message: VM3_TEAM_PICKER_SLUG_MATCH_261007
+  - name: vm3 team picker display treatment 261007
+    conditions:
+      - title = VM3 TEAM PICKER RUNTIME 261007
+      - review-requested = @VM3 Security Reviewers 261007
+    actions:
+      comment:
+        message: VM3_TEAM_PICKER_DISPLAY_MATCH_261007
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
