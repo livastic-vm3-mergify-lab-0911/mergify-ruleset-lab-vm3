@@ -90,15 +90,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 classic strict stale base discriminator 261008
-    conditions:
-      - base = vm3-classic-strict-base-261008
-      - title = VM3 CLASSIC STRICT STALE 261008
-      - label = vm3-classic-strict-trigger-261008
-      - check-success = vm3-classic-strict-required-261008
-    actions:
-      merge:
-        method: squash
   - name: vm3 edit bot write positive 261007
     conditions:
       - title = VM3 EDIT BOT WRITE POSITIVE 261007
