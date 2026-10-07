@@ -62,15 +62,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 classic strict stale base freshness 261007
-    conditions:
-      - base = vm3-classic-strict-target-261007
-      - title = VM3 CLASSIC STRICT STALE MERGE 261007
-      - check-success = vm3-classic-strict-gate-261007
-    actions:
-      merge:
-        method: squash
-        merge_bot_account: livastic-vm3-primary-tmp-260920
   - name: vm3 same head sha title isolation 261007
     conditions:
       - title = VM3 SAME SHA ISOLATION 261007 A
