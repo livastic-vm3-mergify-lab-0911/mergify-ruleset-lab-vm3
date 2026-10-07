@@ -23,6 +23,16 @@ commands_restrictions:
   refresh:
     conditions: true
 queue_rules:
+  - name: vm3-strictfresh-261008
+    queue_conditions:
+      - base = vm3-strictfresh-target-261008
+      - title = VM3 STRICT FRESHNESS 261008
+      - check-success = vm3-strictfresh-required
+    merge_conditions:
+      - check-success = vm3-strictfresh-required
+    branch_protection_injection_mode: queue
+    batch_size: 1
+    merge_method: merge
   - name: vm3-sig-samerepo-mb-261008
     queue_conditions:
       - base = vm3-sig-samerepo-base-261008
