@@ -1,0 +1,6 @@
+scopes:
+  source:
+    files:
+      critical:
+        include:
+          - critical/**/*
