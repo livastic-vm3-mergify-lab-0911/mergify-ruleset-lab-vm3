@@ -23,18 +23,6 @@ commands_restrictions:
   refresh:
     conditions: true
 queue_rules:
-  - name: vm3-strictfresh-261008
-    queue_conditions:
-      - base = vm3-strictfresh-target-261008
-      - title = VM3 STRICT FRESHNESS 261008
-      - check-success = vm3-strictfresh-required
-    merge_conditions:
-      - base = vm3-strictfresh-target-261008
-      - title = VM3 STRICT FRESHNESS 261008
-      - check-success = vm3-strictfresh-required
-    branch_protection_injection_mode: queue
-    batch_size: 1
-    merge_method: merge
   - name: vm3-sig-samerepo-mb-261008
     queue_conditions:
       - base = vm3-sig-samerepo-base-261008
@@ -100,7 +88,7 @@ queue_rules:
 merge_queue:
   skip_intermediate_results: true
   mode: serial
-  max_parallel_checks: 1
+  max_parallel_checks: 2
 pull_request_rules:
   - name: vm3 edit bot write positive 261007
     conditions:
