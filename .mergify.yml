@@ -62,13 +62,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 same head sha label isolation 261007
-    conditions:
-      - title ~= ^VM3 SAME SHA ISOLATION 261007
-      - label = vm3-same-sha-a-261007
-    actions:
-      comment:
-        message: VM3_SAME_SHA_LABEL_MATCH_261007
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
