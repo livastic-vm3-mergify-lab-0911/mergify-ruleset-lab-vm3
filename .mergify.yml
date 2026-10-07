@@ -57,16 +57,6 @@ queue_rules:
     batch_max_wait_time: 5 minutes
     merge_method: merge-batch
 
-  - name: vm3-bypassinj-exempt-261007
-    queue_conditions:
-      - base = vm3-bypassinj-exempt-base-261007
-      - title = VM3 BYPASS INJECTION EXEMPT 261007
-    merge_conditions:
-      - check-success = vm3-bypassinj-never-261007
-    branch_protection_injection_mode: queue
-    batch_size: 1
-    merge_method: merge
-
 merge_queue:
   skip_intermediate_results: true
   mode: serial
