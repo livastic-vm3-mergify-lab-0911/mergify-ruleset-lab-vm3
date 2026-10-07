@@ -62,14 +62,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 classic strict base freshness 261007
-    conditions:
-      - base = vm3-classic-strict-base-261007
-      - title = VM3 CLASSIC STRICT FRESHNESS 261007
-    actions:
-      merge:
-        method: squash
-        merge_bot_account: livastic-vm3-primary-tmp-260920
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
