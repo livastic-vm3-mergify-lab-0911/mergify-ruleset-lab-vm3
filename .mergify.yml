@@ -1,11 +1,9 @@
 scopes:
   source:
     files:
-      dm_base:
-        include:
-          - vm3-dmgen/base/**/*
       dm_victim:
         include:
+          - vm3-dmgen/base/**/*
           - vm3-dmgen/victim/**/*
 
 conflict_resolvers:
