@@ -23,6 +23,14 @@ commands_restrictions:
   refresh:
     conditions: true
 queue_rules:
+  - name: vm3-sig-samerepo-mb-261008
+    queue_conditions:
+      - base = vm3-sig-samerepo-base-261008
+      - title = VM3 SIGNATURE SAME-REPO NATIVE CONTROL 261008
+    merge_conditions: []
+    batch_size: 1
+    batch_max_wait_time: 30 seconds
+    merge_method: merge-batch
   - name: vm3-dmgen-261007
     queue_conditions:
       - base = vm3-dmgen-base-261007
