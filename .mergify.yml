@@ -20,8 +20,6 @@ commands_restrictions:
   queue:
     conditions:
       - sender-permission >= write
-  refresh:
-    conditions: true
 queue_rules:
   - name: vm3-dmgen-261007
     queue_conditions:
