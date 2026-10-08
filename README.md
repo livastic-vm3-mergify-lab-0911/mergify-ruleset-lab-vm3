@@ -1,1 +1,2 @@
 # mergify-ruleset-lab-vm3
+VM3_SAME_SUITE_CHECKRUN_FRESHNESS_261009
