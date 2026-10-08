@@ -1,0 +1,25 @@
+name: VM3 checkrun freshness 261008
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    name: vm3-latest-checkrun-261008
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deterministic variable-controlled conclusion
+        shell: bash
+        env:
+          MODE: ${{ vars.VM3_CHECKRUN_FRESHNESS_MODE }}
+        run: |
+          echo "VM3_CHECKRUN_FRESHNESS_MODE=${MODE:-<unset>}"
+          if [ "${MODE:-pass}" = "fail" ]; then
+            echo "VM3 deliberate rerun failure"
+            exit 1
+          fi
+          echo "VM3 deliberate success"
