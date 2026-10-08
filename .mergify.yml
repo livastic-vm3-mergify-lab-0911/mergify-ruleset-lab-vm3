@@ -87,14 +87,6 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
-  - name: vm3 ruleset app pin provenance 261009
-    conditions:
-      - base = vm3-ruleset-app-pin-base-261009
-      - title = VM3 RULESET APP PIN 261009
-      - label = vm3-ruleset-app-pin-trigger-261009
-    actions:
-      merge:
-        method: squash
   - name: vm3 required signatures exempt current 261008
     conditions:
       - base = vm3-sig-exempt-base-261008
