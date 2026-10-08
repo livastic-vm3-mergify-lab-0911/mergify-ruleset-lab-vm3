@@ -1,5 +1,3 @@
-extends: vm3-extends-resolver-src-261008-k4n7
-
 scopes:
   source:
     files:
@@ -10,7 +8,13 @@ scopes:
         include:
           - vm3-dmgen/victim/**/*
 
-conflict_resolvers: []
+conflict_resolvers:
+  - paths:
+      - pnpm-lock.yaml
+    strategy: pnpm
+  - paths:
+      - vm3-json-reorder-policy.json
+    strategy: json
 
 commands_restrictions:
   queue:
