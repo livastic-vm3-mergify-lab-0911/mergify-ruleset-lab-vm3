@@ -1,3 +1,5 @@
+extends: vm3-extends-resolver-order-src-261008-m8q2
+
 scopes:
   source:
     files:
@@ -15,6 +17,9 @@ conflict_resolvers:
   - paths:
       - vm3-json-reorder-policy.json
     strategy: json
+  - paths:
+      - vm3-extends-order.txt
+    strategy: theirs
 
 commands_restrictions:
   queue:
