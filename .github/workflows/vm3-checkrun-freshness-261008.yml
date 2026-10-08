@@ -8,22 +8,18 @@ permissions:
   contents: read
 
 jobs:
-  earlier-success:
+  freshness:
     name: vm3-latest-checkrun-261008
     runs-on: ubuntu-latest
     steps:
-      - name: Earlier success
+      - name: Deterministic variable-controlled conclusion
+        shell: bash
+        env:
+          MODE: ${{ vars.VM3_CHECKRUN_FRESHNESS_MODE }}
         run: |
-          echo "VM3_SAME_SUITE_EARLIER_SUCCESS=1"
-          exit 0
-
-  later-failure:
-    name: vm3-latest-checkrun-261008
-    needs: earlier-success
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Later failure
-        run: |
-          echo "VM3_SAME_SUITE_LATER_FAILURE=1"
-          exit 1
+          echo "VM3_CHECKRUN_FRESHNESS_MODE=${MODE:-<unset>}"
+          if [ "${MODE:-pass}" = "fail" ]; then
+            echo "VM3 deliberate rerun failure"
+            exit 1
+          fi
+          echo "VM3 deliberate success"
