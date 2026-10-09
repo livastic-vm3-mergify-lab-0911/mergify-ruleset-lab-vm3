@@ -87,6 +87,14 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 same suite duplicate check freshness 261009
+    conditions:
+      - base = vm3-samesuite-base-261009
+      - title = VM3 SAMESUITE DUP 261009
+      - check-success = @github-actions/vm3-samesuite-dup-261009
+    actions:
+      comment:
+        message: VM3_SAMESUITE_DUP_MATCH_261009
   - name: vm3 classic strict freshness 261009
     conditions:
       - base = vm3-retarget-quarantine-b-261007
