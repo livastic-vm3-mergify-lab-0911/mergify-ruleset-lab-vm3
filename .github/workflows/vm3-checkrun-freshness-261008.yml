@@ -1,4 +1,4 @@
-name: VM3 checkrun freshness 261008
+name: VM3 checkrun same-suite duplicate name 261009
 on:
   pull_request:
     branches:
@@ -8,18 +8,20 @@ permissions:
   contents: read
 
 jobs:
-  freshness:
+  earlier_success:
     name: vm3-latest-checkrun-261008
     runs-on: ubuntu-latest
     steps:
-      - name: Deterministic variable-controlled conclusion
-        shell: bash
-        env:
-          MODE: ${{ vars.VM3_CHECKRUN_FRESHNESS_MODE }}
-        run: |
-          echo "VM3_CHECKRUN_FRESHNESS_MODE=${MODE:-<unset>}"
-          if [ "${MODE:-pass}" = "fail" ]; then
-            echo "VM3 deliberate rerun failure"
-            exit 1
-          fi
-          echo "VM3 deliberate success"
+      - run: |
+          echo VM3_SAME_SUITE_EARLIER_SUCCESS_261009
+          exit 0
+
+  later_failure:
+    name: vm3-latest-checkrun-261008
+    needs: earlier_success
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo VM3_SAME_SUITE_LATER_FAILURE_261009
+          exit 1
