@@ -26,11 +26,13 @@ jobs:
           echo "BASE=${{ github.base_ref }}"
           echo "HEAD=${{ github.head_ref }}"
           echo "SHA=${{ github.event.pull_request.head.sha }}"
-      - name: Generate deterministic passing control
+      - name: Generate deterministic failure
         run: |
           cat > /tmp/vm3-retarget.xml <<'XML'
-          <testsuite name="vm3-retarget" tests="1" failures="0">
-            <testcase name="tests/dir/gate.spec.js &gt; security gate"/>
+          <testsuite name="vm3-retarget" tests="1" failures="1">
+            <testcase name="tests/dir/gate.spec.js &gt; security gate">
+              <failure message="VM3_RETARGET_QUARANTINE_FAIL_261007">VM3_RETARGET_QUARANTINE_FAIL_261007</failure>
+            </testcase>
           </testsuite>
           XML
       - name: Mergify quarantine verdict
