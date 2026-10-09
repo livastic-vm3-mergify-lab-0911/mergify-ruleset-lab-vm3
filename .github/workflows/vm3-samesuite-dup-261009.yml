@@ -1,0 +1,26 @@
+name: VM3 SameSuite Duplicate 261009
+on:
+  pull_request:
+    branches:
+      - vm3-samesuite-base-261009
+permissions:
+  contents: read
+jobs:
+  first:
+    name: vm3-samesuite-dup-261009
+    runs-on: ubuntu-latest
+    steps:
+      - name: Earlier success
+        run: |
+          echo VM3_SAMESUITE_EARLY_SUCCESS_261009
+          exit 0
+  second:
+    name: vm3-samesuite-dup-261009
+    needs: first
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Later failure
+        run: |
+          echo VM3_SAMESUITE_LATE_FAILURE_261009
+          exit 1
