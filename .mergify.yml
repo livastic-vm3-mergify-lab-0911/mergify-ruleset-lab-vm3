@@ -21,10 +21,6 @@ conflict_resolvers:
       - vm3-extends-order.txt
     strategy: theirs
 
-  - paths:
-      - db/structure.sql
-    strategy: rails-structure
-
 commands_restrictions:
   queue:
     conditions:
@@ -82,16 +78,6 @@ queue_rules:
       - title = VM3 JSON REORDER FORCED 261007
     merge_conditions:
       - check-success = vm3-jsonreorder-never-261007
-    batch_size: 2
-    batch_max_wait_time: 5 minutes
-    merge_method: merge-batch
-
-  - name: vm3-rails-trigger2-261010
-    queue_conditions:
-      - base = vm3-rails-trigger2-base-261010
-      - title = VM3 RAILS TRIGGER BINDING 261010
-    merge_conditions:
-      - check-success = vm3-rails-trigger2-never-261010
     batch_size: 2
     batch_max_wait_time: 5 minutes
     merge_method: merge-batch
