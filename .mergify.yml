@@ -89,7 +89,7 @@ merge_queue:
 pull_request_rules:
   - name: vm3 classic strict freshness 261009
     conditions:
-      - base = vm3-classic-strict-base-261009
+      - base = vm3-retarget-quarantine-b-261007
       - title = VM3 CLASSIC STRICT FRESHNESS 261009
       - label = vm3-classic-strict-trigger-261009
     actions:
