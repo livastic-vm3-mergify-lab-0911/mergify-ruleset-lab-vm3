@@ -87,6 +87,15 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 classic strict freshness 261009
+    conditions:
+      - base = vm3-classic-strict-base-261009
+      - title = VM3 CLASSIC STRICT FRESHNESS 261009
+      - label = vm3-classic-strict-trigger-261009
+    actions:
+      merge:
+        method: squash
+        merge_bot_account: livastic-vm3-primary-tmp-260920
   - name: vm3 required signatures exempt current 261008
     conditions:
       - base = vm3-sig-exempt-base-261008
