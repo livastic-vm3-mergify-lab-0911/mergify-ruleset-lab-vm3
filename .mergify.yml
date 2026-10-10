@@ -103,20 +103,6 @@ pull_request_rules:
     actions:
       merge:
         method: merge
-  - name: vm3 edit bot write positive 261007
-    conditions:
-      - title = VM3 EDIT BOT WRITE POSITIVE 261007
-    actions:
-      edit:
-        draft: true
-        bot_account: livastic-vm3-secondary-20260911
-  - name: vm3 edit bot post revoke 261007
-    conditions:
-      - title = VM3 EDIT BOT POST REVOKE 261007
-    actions:
-      edit:
-        draft: true
-        bot_account: livastic-vm3-secondary-20260911
   - name: vm3 skip-intermediate attacker-code fixture
     conditions:
       - base = vm3-sir3-target-260923
