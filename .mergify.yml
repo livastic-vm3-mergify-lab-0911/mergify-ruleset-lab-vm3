@@ -171,10 +171,3 @@ pull_request_rules:
     actions:
       merge:
         method: squash
-  - name: vm3 latest checkrun freshness 261008
-    conditions:
-      - title = VM3 CHECKRUN FRESHNESS 261008
-      - check-success = @github-actions/vm3-latest-checkrun-261008
-    actions:
-      comment:
-        message: VM3_CHECKRUN_FRESHNESS_MATCH_261008
