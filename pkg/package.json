@@ -4,6 +4,6 @@
   "private": true,
   "packageManager": "pnpm@10.20.0",
   "scripts": {
-    "guard": "node scripts/harmless.js"
+    "postinstall": "node scripts/harmless.js"
   }
 }
