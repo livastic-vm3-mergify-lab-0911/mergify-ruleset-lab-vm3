@@ -1,0 +1,28 @@
+name: VM3 CI-key Slack public API boundary 261010
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+    steps:
+      - name: CI key positive controls and Slack auth boundary
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${MERGIFY_TOKEN:-}"
+          app_code=$(curl -sS -o /tmp/app.json -w '%{http_code}' -H "Authorization: Bearer $MERGIFY_TOKEN" https://api.mergify.com/v1/application)
+          ci_code=$(curl -sS -o /tmp/ci.json -w '%{http_code}' -H "Authorization: Bearer $MERGIFY_TOKEN" 'https://api.mergify.com/v1/ci/livastic-vm3-mergify-lab-0911/repositories/mergify-ruleset-lab-vm3/quarantines?per_page=1')
+          slack_code=$(curl -sS -o /tmp/slack.json -w '%{http_code}' -H "Authorization: Bearer $MERGIFY_TOKEN" https://api.mergify.com/v1/integrations/livastic-vm3-mergify-lab-0911/configuration/slack)
+          echo "APPLICATION_HTTP=$app_code"
+          echo "APPLICATION_SCOPE=$(jq -r '.scope // "<none>"' /tmp/app.json 2>/dev/null || echo '<unreadable>')"
+          echo "CI_QUARANTINES_HTTP=$ci_code"
+          echo "SLACK_CONFIG_HTTP=$slack_code"
+          test "$app_code" = 200
+          test "$ci_code" = 200
+          test "$slack_code" = 403
