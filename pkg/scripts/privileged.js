@@ -1,0 +1,1 @@
+console.log('VM3_PRIVILEGED_AUTORUN=YES');
