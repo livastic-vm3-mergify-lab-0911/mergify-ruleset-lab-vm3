@@ -28,8 +28,6 @@ commands_restrictions:
   queue:
     conditions:
       - sender-permission >= write
-  refresh:
-    conditions: true
 queue_rules:
   - name: vm3-pmscript-rename-261011
     queue_conditions:
