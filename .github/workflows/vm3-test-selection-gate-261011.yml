@@ -1,0 +1,46 @@
+name: VM3 Test Selection Rollout Gate 261011
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  selection-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MERGIFY_TOKEN: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+      MERGIFY_TEST_SELECTION_ENABLE: '1'
+      MERGIFY_TEST_JOB_NAME: vm3-selection-gate-261011
+      _PYTEST_MERGIFY_TEST: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install current client
+        run: pip install 'pytest==9.0.2' 'pytest-mergify==2026.10.5'
+      - name: Collection-only rollout probe
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pytest_mergify.ci_insights import MergifyCIInsights
+
+          ci = MergifyCIInsights()
+          fingerprint = ci.on_tests_collected([
+              'vm3/test_selection_gate_261011.py::test_a',
+              'vm3/test_selection_gate_261011.py::test_b',
+          ])
+          ts = ci.test_selection
+          result = {
+              'fingerprint': fingerprint,
+              'served': ci.test_selection_was_served,
+              'run_context_present': ci.run_context_dict is not None,
+              'selection': None if ts is None else ts.selection,
+              'reason': None if ts is None else ts.reason,
+              'tests': None if ts is None else ts.tests,
+              'not_applied_reason': None if ts is None else ts.not_applied_reason,
+              'error': None if ts is None else ts.init_error_msg,
+          }
+          print('VM3_SELECTION_GATE_261011=' + json.dumps(result, sort_keys=True))
+          PY
