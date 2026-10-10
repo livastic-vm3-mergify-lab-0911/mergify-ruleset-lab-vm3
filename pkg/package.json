@@ -1,0 +1,9 @@
+{
+  "name": "vm3-pmscript-rename",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "guard": "node scripts/harmless.js"
+  }
+}
