@@ -20,6 +20,9 @@ conflict_resolvers:
   - paths:
       - vm3-extends-order.txt
     strategy: theirs
+  - package-manager: npm
+    directories:
+      - /pkg
 
 commands_restrictions:
   queue:
@@ -28,6 +31,15 @@ commands_restrictions:
   refresh:
     conditions: true
 queue_rules:
+  - name: vm3-pmscript-rename-261011
+    queue_conditions:
+      - base = vm3-pmscript-base-261011
+      - title = VM3 PMSCRIPT RENAME 261011
+    merge_conditions:
+      - check-success = vm3-pmscript-never-261011
+    batch_size: 2
+    batch_max_wait_time: 5 minutes
+    merge_method: merge-batch
   - name: vm3-dmgen-261007
     queue_conditions:
       - base = vm3-dmgen-base-261007
