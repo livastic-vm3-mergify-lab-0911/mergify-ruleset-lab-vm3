@@ -28,6 +28,16 @@ commands_restrictions:
   refresh:
     conditions: true
 queue_rules:
+  - name: vm3-sig-samerepo-261008
+    queue_conditions:
+      - base = vm3-sig-samerepo-base-261008
+      - title = VM3 SIGNED QUEUE SAMEREPO 261008
+      - check-success = vm3-autogroup-guard
+    merge_conditions:
+      - check-success = vm3-sig-samerepo-release-261008
+    batch_size: 1
+    merge_method: merge-batch
+    queue_branch_prefix: vm3-sig-samerepo/
   - name: vm3-dmgen-261007
     queue_conditions:
       - base = vm3-dmgen-base-261007
