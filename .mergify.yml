@@ -87,6 +87,14 @@ merge_queue:
   mode: serial
   max_parallel_checks: 2
 pull_request_rules:
+  - name: vm3 app pinned check vs legacy status 261011
+    conditions:
+      - base = vm3-checkprov-base-261011
+      - title = VM3 CHECK PROVENANCE 261011
+      - check-success = @github-actions/vm3-prov-gate-261011
+    actions:
+      comment:
+        message: VM3_APP_PINNED_CHECK_MATCHED_LEGACY_STATUS_261011
   - name: vm3 same suite duplicate check freshness 261009
     conditions:
       - base = vm3-samesuite-base-261009
