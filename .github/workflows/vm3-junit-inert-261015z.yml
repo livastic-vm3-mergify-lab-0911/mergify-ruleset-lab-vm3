@@ -3,11 +3,14 @@ on:
   push:
     branches:
       - vm3-junit-render-261015z
+  pull_request:
+    branches:
+      - main
 permissions:
   contents: read
 jobs:
   render-probe:
-    if: contains(github.event.head_commit.message, 'VM3_RENDER_PAYLOAD_READY_261015Z')
+    if: github.event_name == 'pull_request' || contains(github.event.head_commit.message, 'VM3_RENDER_PAYLOAD_READY_261015Z')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
