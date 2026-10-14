@@ -1,0 +1,33 @@
+name: VM3 controlled JUnit failure rendering 261015z
+on:
+  push:
+    branches:
+      - vm3-junit-render-261015z
+permissions:
+  contents: read
+jobs:
+  render-probe:
+    if: contains(github.event.head_commit.message, 'VM3_RENDER_PAYLOAD_READY_261015Z')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate inert JUnit report from contributor-controlled text
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from xml.etree.ElementTree import Element, SubElement, ElementTree
+          payload = Path('vm3-render-payload-261015z.txt').read_text().strip()
+          suite = Element('testsuite', {'name':'vm3-render-suite-261015z','tests':'1','failures':'1'})
+          case = SubElement(suite, 'testcase', {'classname':'vm3.render.probe','name':'controlled-failure-261015z'})
+          failure = SubElement(case, 'failure', {'type':'AssertionError','message':payload})
+          failure.text = payload
+          ElementTree(suite).write('vm3-junit-inert.xml', encoding='utf-8', xml_declaration=True)
+          PY
+      - name: Upload inert JUnit results to existing Mergify Test Engine
+        uses: Mergifyio/gha-mergify-ci@v25
+        with:
+          action: junit-process
+          token: ${{ secrets.VM3_ISSUE_COMMENT_MERGIFY_TOKEN }}
+          job_name: vm3-render-junit-261015z
+          report_path: vm3-junit-inert.xml
